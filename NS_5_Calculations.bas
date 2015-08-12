@@ -21,16 +21,16 @@ Function NashSetupCalculationsWorksheet(ByRef wbMaster As Workbook, _
 ByRef tmpShtNum As Long)
 
     wbMaster.Activate
-    
+
     ' Monthly, use Pivot Table Worksheet
     tmpShtNum = Sheets.Count
     Call NashCalculationsWorksheet(wbMaster, tmpShtNum)
-    
+
     ' Delete Pivot Table
     Application.DisplayAlerts = False
     Worksheets(tmpShtNum - 1).Delete
     Application.DisplayAlerts = True
-        
+
     ' Daily, Worksheet #3
     tmpShtNum = Sheets.Count - 1
     Call NashCalculationsWorksheet(wbMaster, tmpShtNum)
@@ -40,7 +40,7 @@ End Function
 ' Date Created : February 23, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 1, 2014
+' Date Edited  : March 4, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -57,13 +57,13 @@ ByRef tmpShtNum As Long)
     Dim tmpSheet As Worksheet
     Dim lastRow As Long, lastCol As Long
     Dim statsCol As Long, tmpCol As Long
-    
+
     ' Activate Appropriate Worksheet #
     wbMaster.Activate
     Set tmpSheet = wbMaster.Worksheets(tmpShtNum)
     tmpSheet.Activate
-    
-    ' Monthly Average Calculations
+
+    ' Average Calculations
     Call FindLastRowColumn(lastRow, lastCol)
     tmpCol = lastCol + 4 ' Do calculations  from last column + four more columns
     Columns("D:I").ColumnWidth = 17
@@ -77,24 +77,24 @@ ByRef tmpShtNum As Long)
     Range("A1").Offset(0, tmpCol + 1).Value = "TOT_AVE_SIM"
     Range("A1").Offset(1, tmpCol + 1).FormulaR1C1 = "=AVERAGE(RC[-" & lastCol + 3 & "]:R[" & lastRow - 2 & "]C[-" & lastCol + 3 & "])"
 
-    ' Monthly Statistics
+    ' Statistics
     ' Print Header then Values
     Range("A1").Offset(0, lastCol).Value = Stats1 ' Headers
     Range("A1").Offset(1, lastCol).FormulaR1C1 = "=(RC[-" & lastCol - 1 & "]-RC[-" & lastCol - 2 & "])^2"
     Range("A1").Offset(1, lastCol).AutoFill Destination:=Range(Cells(2, lastCol + 1), Cells(lastRow, lastCol + 1))
-    
+
     Range("A1").Offset(0, lastCol + 1).Value = Stats2
     Range("A1").Offset(1, lastCol + 1).FormulaR1C1 = "=(RC[-" & lastCol & "]-R2C" & tmpCol + 1 & ")^2"
     Range("A1").Offset(1, lastCol + 1).AutoFill Destination:=Range(Cells(2, lastCol + 2), Cells(lastRow, lastCol + 2))
-    
+
     Range("A1").Offset(0, lastCol + 2).Value = Stats3
     Range("A1").Offset(1, lastCol + 2).FormulaR1C1 = "=ABS(RC[-" & lastCol + 1 & "]-RC[-" & lastCol & "])"
     Range("A1").Offset(1, lastCol + 2).AutoFill Destination:=Range(Cells(2, lastCol + 3), Cells(lastRow, lastCol + 3))
-    
+
     Range("A1").Offset(0, lastCol + 3).Value = Stats4
     Range("A1").Offset(1, lastCol + 3).FormulaR1C1 = "=ABS(RC[-" & lastCol + 2 & "]-R2C" & tmpCol + 1 & ")"
     Range("A1").Offset(1, lastCol + 3).AutoFill Destination:=Range(Cells(2, lastCol + 4), Cells(lastRow, lastCol + 4))
-    
+
     ' Rearrange Columns
     Range(Columns(lastCol + 1), Columns(lastCol + 2)).Select
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove

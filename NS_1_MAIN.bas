@@ -25,15 +25,15 @@ Public varLastColumn As Long
 ' Returns      : -
 '---------------------------------------------------------------------
 Sub UserFormInitialize()
-    
+
     UserForm1.Show
-    
+
 End Sub
 '---------------------------------------------------------------------
 ' Date Created : February 21, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : February 21, 2014
+' Date Edited  : March 4, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -56,25 +56,25 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
     Dim start_time As Date, end_time As Date
     Dim ProcessingTime As Long
     Dim MessageSummary As String, SummaryTitle As String
-    
+
     UserForm1.Hide
     Application.ScreenUpdating = False
-    
+
     acruFileResult = True
     SummaryTitle = "Nash SutCliff POST-PROCESSING Summary: "
     start_time = Now()
-    
+
     '-------------------------------------------------------------
     ' Initialize variables to find into an array
     '-------------------------------------------------------------
     Call InitVarArray
-    
+
     '-------------------------------------------------------------
     ' Validate User Input
     '-------------------------------------------------------------
     valResult = ValidateDirectory
     If valResult = False Then GoTo Cancel
-    
+
     '-------------------------------------------------------------
     ' New Workbook (wbMaster) will be added that contains one
     ' worksheet names "Original" (Mastersheet). Worksheet #1
@@ -84,7 +84,7 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
     acruFileResult = Analyze_Multi_ACRU_Out_xxxx(wbMaster, MasterSheet, MasterFile)
     '  Application.StatusBar = "Finished post-processing the selected ACRU output files."
     If acruFileResult = False Then GoTo Cancel
-    
+
     '-------------------------------------------------------------
     ' Process Original Data. Worksheet #2
     ' Find the next Start Year and the associated row number
@@ -98,7 +98,7 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
     '-------------------------------------------------------------
     Call NashDataSetupWorksheet(wbMaster, tmpSheet)
     Set tmpSheet = Nothing
-    
+
     '-------------------------------------------------------------
     ' Create Pivot Table for Monthly Calculations. Worksheet #4
     ' Find the next Start Year and the associated row number
@@ -112,26 +112,26 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
     ' Delete Pivot Table for simpler calculations
     '-------------------------------------------------------------
     Call NashSetupCalculationsWorksheet(wbMaster, tmpSheetNum)
-        
+
     '-------------------------------------------------------------
     ' Summarize Calculations with Statistics: Worksheet #7
     ' Daily and Monthly Nash Sutcliff
     '-------------------------------------------------------------
     Call NashSummaryWorksheet(wbMaster, DailyLastRow, MonthlyLastRow)
-    
+
     '-------------------------------------------------------------
     ' Create Streamflow Graphs
     ' Daily and Monthly (Worksheet #6, #7)
     '-------------------------------------------------------------
-    inputMaxAxis = InputBox("Set Axis Maximums")
+    inputMaxAxis = 0 ' InputBox("Set Axis Maximums")
     Call CreateStreamflowGraph(wbMaster, tmpSheet, 3, _
         DailyLastRow, _
         inputMaxAxis, 1)
-        
+
     Call CreateStreamflowGraph(wbMaster, tmpSheet, 4, _
         MonthlyLastRow, _
         inputMaxAxis, 2)
-    
+
     '-------------------------------------------------------------
     ' Create Daily Data Probability Worksheet and Graph
     ' Worksheet #8, #9
@@ -141,7 +141,7 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
     ' Create Monthly Data Probability Worksheet and Graph
     ' Worksheet #10, #11
     '-------------------------------------------------------------
-        
+
     '-------------------------------------------------------------
     ' Save Workbook and all the progress as follows:
     ' NS_HRU####_RUN##_MMDDYYYY.xlsx
@@ -152,7 +152,7 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
     If wbExists = True Then MasterFile = ChangeName(wbExists, OutPath, MasterFile) ' Change MasterFile
     OutFileName = SaveReturnXLSX(wbMaster, MasterSheet, OutPath, MasterFile)
     wbMaster.Close SaveChanges:=False
-    
+
     end_time = Now()
     ProcessingTime = DateDiff("n", CDate(start_time), CDate(end_time))
     MessageSummary = MacroTimer(ProcessingTime, OutFileName)
@@ -160,7 +160,7 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
 
     Application.StatusBar = False
     Application.ScreenUpdating = True
-    
+
 Cancel:
     If acruFileResult = False Then
         MessageSummary = MacroCancel(3)
@@ -184,20 +184,20 @@ End Function
 ' Returns      : Boolean
 '---------------------------------------------------------------------------------------
 Function IsFileOpen(ByVal MasterFile As String) As Boolean
-     
+
     Dim iFilenum As Long
     Dim iErr As Long
     Dim wbTMP As Workbook
-    
+
     On Error Resume Next
-    
+
     iFilenum = FreeFile()
     Open FileName For Input Lock Read As #iFilenum
     Close iFilenum
     iErr = Err
-    
+
     Set wbTMP = Workbooks(MasterFile)
-    
+
     On Error GoTo 0
 
     Select Case iErr
@@ -226,7 +226,7 @@ End Function
 Function CheckWorkBook(ByVal MasterFile As String)
 
     Dim WbookCheck As Workbook
-     
+
     On Error Resume Next
     Set WbookCheck = Workbooks.Open(MasterFile)
     On Error GoTo 0
@@ -236,5 +236,5 @@ Function CheckWorkBook(ByVal MasterFile As String)
     ElseIf Application.ActiveWorkbook.Name = WbookCheck.Name Then
         WbookCheck.Close SaveChanges:=True
     End If
-    
+
 End Function

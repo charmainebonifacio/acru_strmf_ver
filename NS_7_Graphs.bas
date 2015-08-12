@@ -1,4 +1,18 @@
 Attribute VB_Name = "NS_7_Graphs"
+'---------------------------------------------------------------------
+' Date Created : February 27, 2014
+' Created By   : Charmaine Bonifacio
+'---------------------------------------------------------------------
+' Date Edited  : March 4, 2014
+' Edited By    : Charmaine Bonifacio
+'---------------------------------------------------------------------
+' Organization : Department of Geography, University of Lethbridge
+' Title        : CreateStreamflowGraph
+' Description  : This function creates the daily or the monthly
+'                streamflow graphs.
+' Parameters   : Workbook, Worksheet, Long, Long, Long, Long
+' Returns      : -
+'---------------------------------------------------------------------
 Function CreateStreamflowGraph(ByRef wbMaster As Workbook, _
 ByRef tmpSheet As Worksheet, ByVal tmpShtNum As Long, _
 ByVal lastRow As Long, ByVal maxVal As Long, ByVal calIndex As Long)
@@ -11,11 +25,11 @@ ByVal lastRow As Long, ByVal maxVal As Long, ByVal calIndex As Long)
     Dim graphName As String
     Dim rng As Range
     Dim graphSheet As Worksheet
-    
+
     wbMaster.Activate
     Set tmpSheet = wbMaster.Worksheets(tmpShtNum)
     tmpSheet.Activate
-    
+
     Range("B:B").Select
     ActiveSheet.Shapes.AddChart.Select
     If calIndex = 1 Then
@@ -32,7 +46,7 @@ ByVal lastRow As Long, ByVal maxVal As Long, ByVal calIndex As Long)
         .HasLegend = False
         .HasTitle = False
     End With
-    
+
     Dim seriesData As Series
     Set seriesData = ActiveChart.SeriesCollection(1)
     seriesData.Name = "Data"
@@ -51,16 +65,16 @@ ByVal lastRow As Long, ByVal maxVal As Long, ByVal calIndex As Long)
             .DisplayEquation = True
         End With
     End With
-    
+
     ' Set Axis
-    ActiveChart.Axes(xlCategory).MinimumScale = 0
-    ActiveChart.Axes(xlCategory).MaximumScale = maxVal
-    ActiveChart.Axes(xlValue).MinimumScale = 0
-    ActiveChart.Axes(xlValue).MaximumScale = maxVal
+    'ActiveChart.Axes(xlCategory).MinimumScale = 0
+    'ActiveChart.Axes(xlCategory).MaximumScale = maxVal
+    'ActiveChart.Axes(xlValue).MinimumScale = 0
+    'ActiveChart.Axes(xlValue).MaximumScale = maxVal
     ActiveChart.Axes(xlCategory).HasMajorGridlines = True
     gridunits = ActiveChart.Axes(xlValue).MajorUnit
     ActiveChart.Axes(xlCategory).MajorUnit = gridunits
-        
+
     ' Add axis titles
     ActiveChart.SetElement (msoElementPrimaryCategoryAxisTitleAdjacentToAxis)
     ActiveChart.SetElement (msoElementPrimaryValueAxisTitleRotated)
@@ -70,7 +84,7 @@ ByVal lastRow As Long, ByVal maxVal As Long, ByVal calIndex As Long)
     ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Font.Size = 28
     ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Text = "Observed Streamflow"
     ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Font.Size = 28
-    
+
     ' Extra Trendline
     ActiveChart.SeriesCollection.NewSeries
     Dim trendLine As Series
@@ -92,7 +106,5 @@ ByVal lastRow As Long, ByVal maxVal As Long, ByVal calIndex As Long)
     ActiveChart.TextBoxes(1).Interior.Color = vbWhite
     ActiveChart.TextBoxes(1).Font.Size = 26
     seriesData.Trendlines(1).DataLabel.Delete
-    
+
 End Function
-
-
