@@ -17,9 +17,6 @@ Function CreateStreamflowGraph(ByRef wbMaster As Workbook, _
 ByRef tmpSheet As Worksheet, ByVal tmpShtNum As Long, _
 ByVal lastRow As Long, ByVal maxVal As Long, ByVal calIndex As Long)
 
-' This sub-program creates an observed Vs simulated graph using the data
-'previously copied
-
     Dim txtText As String
     Dim gridunits As Integer
     Dim graphName As String
