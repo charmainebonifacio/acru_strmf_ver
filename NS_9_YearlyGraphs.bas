@@ -97,7 +97,7 @@ End Function
 ' Date Created : March 25, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : April 7, 2014
+' Date Edited  : August 14, 2015
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -108,12 +108,10 @@ End Function
 ' Parameters   : Workbook, Long, Long, Long, Long, Long
 ' Returns      : -
 '---------------------------------------------------------------------
-Function FindAnnualRangeRows(ByRef wbMaster As Workbook, ByVal dateCol As Long, _
-ByVal LastRow As Long, _
-ByVal SeriesStartYear As Long, _
-ByVal seriesSY As Date, _
-ByRef FoundStartRow As Long, _
-ByRef FoundEndRow As Long, _
+Function FindAnnualRangeRows(ByRef wbMaster As Workbook, _
+ByVal dateCol As Long, ByVal LastRow As Long, _
+ByVal SeriesStartYear As Long, ByVal seriesSY As Date, _
+ByRef FoundStartRow As Long, ByRef FoundEndRow As Long, _
 ByVal Index As Long)
 
     Dim tmpSheet As Worksheet
@@ -129,7 +127,7 @@ ByVal Index As Long)
     ' Initialize Variables
     FoundStartRow = 0
     FoundEndRow = 0
-    StartRow = 2                        ' After header row
+    StartRow = 2                         ' After header row
     newStartYear = CStr(SeriesStartYear) ' Convert to string
 
     ' Find First Row

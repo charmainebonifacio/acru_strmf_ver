@@ -36,7 +36,7 @@ End Sub
 ' Date Created : February 21, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : April 6, 2014
+' Date Edited  : August 14, 2015
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -48,6 +48,10 @@ End Sub
 '---------------------------------------------------------------------
 Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
 
+    Dim start_time As Date, end_time As Date
+    Dim ProcessingTime As Long
+    Dim MessageSummary As String, SummaryTitle As String
+
     Dim macroBook As Workbook, macroSheet As Worksheet
     Dim wbMaster As Workbook, MasterSheet As Worksheet
     Dim tmpSheet As Worksheet, tmpSheetNum As Long
@@ -57,9 +61,7 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
     Dim inputMaxAxis As Long
     Dim valResult As Boolean, acruFileResult As Boolean
     Dim wbResult As Boolean, wbExists As Boolean
-    Dim start_time As Date, end_time As Date
-    Dim ProcessingTime As Long
-    Dim MessageSummary As String, SummaryTitle As String
+    Dim FileCount As Integer
 
     UserForm1.Hide
     Application.ScreenUpdating = False
@@ -72,8 +74,6 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
     ' Initialize variables to find into an array
     '-------------------------------------------------------------
     Call InitVarArray
-    Set macroBook = ActiveWorkbook
-    Set macroSheet = macroBook.Worksheets(2)
 
     '-------------------------------------------------------------
     ' Validate User Input
@@ -82,87 +82,98 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
     If valResult = False Then GoTo Cancel
 
     '-------------------------------------------------------------
-    ' New Workbook (wbMaster) will be added that contains one
-    ' worksheet names "Original" (Mastersheet). Worksheet #1
-    ' Setup the selected ACRU file. Then find & copy values for
-    ' two particular variables: CELRUN, STRMFL
+    ' Loop Thru Each File
     '-------------------------------------------------------------
-    acruFileResult = Analyze_Multi_ACRU_Out_xxxx(wbMaster, MasterSheet, MasterFile)
-    '  Application.StatusBar = "Finished post-processing the selected ACRU output files."
-    If acruFileResult = False Then GoTo Cancel
+    For refIndex = LBound(HRUarr) To UBound(HRUarr)
+        Set macroBook = ActiveWorkbook
+        Set macroSheet = macroBook.Worksheets(2)
 
-    '-------------------------------------------------------------
-    ' Process Original Data. Worksheet #2
-    ' Find the next Start Year and the associated row number
-    '-------------------------------------------------------------
-    Call NashOrigSetupWorksheet(wbMaster, tmpSheet, StartYear, EndYear, DailyLastRow)
-    ' Application.StatusBar = "Finished processing the original ACRU data for Nash SutCliff calculations."
-    Set tmpSheet = Nothing
+        '-------------------------------------------------------------
+        ' New Workbook (wbMaster) will be added that contains one
+        ' worksheet names "Original" (Mastersheet). Worksheet #1
+        ' Setup the selected ACRU file. Then find & copy values for
+        ' two particular variables: CELRUN, STRMFL
+        '-------------------------------------------------------------
+        FileCount = FileCount + 1
+        HRUNUM = HRUarr(refIndex)
+        acruFileResult = Analyze_Multi_ACRU_Out_xxxx(wbMaster, MasterSheet, MasterFile, FileCount)
+        '  Application.StatusBar = "Finished post-processing the selected ACRU output files."
+        If acruFileResult = False Then GoTo Cancel
 
-    '-------------------------------------------------------------
-    ' Copy Original Data but only keep DATE, OBS and SIM. Worksheet #3
-    '-------------------------------------------------------------
-    Call NashDataSetupWorksheet(wbMaster, tmpSheet)
-    Set tmpSheet = Nothing
+        '-------------------------------------------------------------
+        ' Process Original Data. Worksheet #2
+        ' Find the next Start Year and the associated row number
+        '-------------------------------------------------------------
+        Call NashOrigSetupWorksheet(wbMaster, tmpSheet, StartYear, EndYear, DailyLastRow)
+        ' Application.StatusBar = "Finished processing the original ACRU data for Nash SutCliff calculations."
+        Set tmpSheet = Nothing
 
-    '-------------------------------------------------------------
-    ' Create Pivot Table for Monthly Calculations. Worksheet #4
-    ' Find the next Start Year and the associated row number
-    '-------------------------------------------------------------
-    Call NashPivotSetupWorksheet(wbMaster, tmpSheet, StartYear, EndYear, MonthlyLastRow)
-    ' Application.StatusBar = "Finished creating pivot table on ACRU data for Nash SutCliff calculations."
-    Set tmpSheet = Nothing
+        '-------------------------------------------------------------
+        ' Copy Original Data but only keep DATE, OBS and SIM. Worksheet #3
+        '-------------------------------------------------------------
+        Call NashDataSetupWorksheet(wbMaster, tmpSheet)
+        Set tmpSheet = Nothing
 
-    '-------------------------------------------------------------
-    ' Start Monthly and Daily Calculations. Worksheet #5 & #3
-    ' Delete Pivot Table for simpler calculations
-    '-------------------------------------------------------------
-    Call NashSetupCalculationsWorksheet(wbMaster, tmpSheetNum)
+        '-------------------------------------------------------------
+        ' Create Pivot Table for Monthly Calculations. Worksheet #4
+        ' Find the next Start Year and the associated row number
+        '-------------------------------------------------------------
+        Call NashPivotSetupWorksheet(wbMaster, tmpSheet, StartYear, EndYear, MonthlyLastRow)
+        ' Application.StatusBar = "Finished creating pivot table on ACRU data for Nash SutCliff calculations."
+        Set tmpSheet = Nothing
 
-    '-------------------------------------------------------------
-    ' Summarize Calculations with Statistics: Worksheet #7
-    ' Daily and Monthly Nash Sutcliff
-    '-------------------------------------------------------------
-    Call NashSummaryWorksheet(wbMaster, DailyLastRow, MonthlyLastRow)
+        '-------------------------------------------------------------
+        ' Start Monthly and Daily Calculations. Worksheet #5 & #3
+        ' Delete Pivot Table for simpler calculations
+        '-------------------------------------------------------------
+        Call NashSetupCalculationsWorksheet(wbMaster, tmpSheetNum)
 
-    '-------------------------------------------------------------
-    ' Create Streamflow Graphs
-    ' Daily and Monthly (Worksheet #6, #7)
-    '-------------------------------------------------------------
-    inputMaxAxis = 0 ' InputBox("Set Axis Maximums")
-    Call CreateStreamflowGraph(wbMaster, tmpSheet, 3, _
-        DailyLastRow, _
-        inputMaxAxis, 1)
+        '-------------------------------------------------------------
+        ' Summarize Calculations with Statistics: Worksheet #7
+        ' Daily and Monthly Nash Sutcliff
+        '-------------------------------------------------------------
+        Call NashSummaryWorksheet(wbMaster, DailyLastRow, MonthlyLastRow)
 
-    Call CreateStreamflowGraph(wbMaster, tmpSheet, 4, _
-        MonthlyLastRow, _
-        inputMaxAxis, 2)
+        '-------------------------------------------------------------
+        ' Create Streamflow Graphs
+        ' Daily and Monthly (Worksheet #6, #7)
+        '-------------------------------------------------------------
+        inputMaxAxis = 0 ' InputBox("Set Axis Maximums")
+        Call CreateStreamflowGraph(wbMaster, tmpSheet, 3, _
+            DailyLastRow, _
+            inputMaxAxis, 1)
 
-    '-------------------------------------------------------------
-    ' Create Daily Data Probability Worksheet and Graphs
-    ' Worksheet #8, #9, #10, #11
-    '-------------------------------------------------------------
-    Call NashProbabilityWorksheet(wbMaster, macroBook, macroSheet, _
-        DailyLastRow, MonthlyLastRow)
+        Call CreateStreamflowGraph(wbMaster, tmpSheet, 4, _
+            MonthlyLastRow, _
+            inputMaxAxis, 2)
 
-    '-------------------------------------------------------------
-    ' Create Streamflow Worksheet and Yearly Streamflow Graphs
-    ' Copy Worksheet #3
-    ' Worksheet #12
-    '-------------------------------------------------------------
-    Call NashStreamflowWorksheet(wbMaster, StartYear, EndYear)
+        '-------------------------------------------------------------
+        ' Create Daily Data Probability Worksheet and Graphs
+        ' Worksheet #8, #9, #10, #11
+        '-------------------------------------------------------------
+        Call NashProbabilityWorksheet(wbMaster, macroBook, macroSheet, _
+            DailyLastRow, MonthlyLastRow)
 
-    '-------------------------------------------------------------
-    ' Save Workbook and all the progress as follows:
-    ' NS_HRU####_RUN##_MMDDYYYY.xlsx
-    '-------------------------------------------------------------
-    wbResult = IsFileOpen(MasterFile)
-    If wbResult = True Then CheckWorkBook (MasterFile)
-    wbExists = CheckFileExists(OutPath, MasterFile, ".xlsx")
-    If wbExists = True Then MasterFile = ChangeName(wbExists, OutPath, MasterFile) ' Change MasterFile
-    OutFileName = SaveReturnXLSX(wbMaster, MasterSheet, OutPath, MasterFile)
-    wbMaster.Close SaveChanges:=False
-    macroBook.Save
+        '-------------------------------------------------------------
+        ' Create Streamflow Worksheet and Yearly Streamflow Graphs
+        ' Copy Worksheet #3
+        ' Worksheet #12
+        '-------------------------------------------------------------
+        Call NashStreamflowWorksheet(wbMaster, StartYear, EndYear)
+
+        '-------------------------------------------------------------
+        ' Save Workbook and all the progress as follows:
+        ' NS_HRU####_RUN##_MMDDYYYY.xlsx
+        '-------------------------------------------------------------
+        wbResult = IsFileOpen(MasterFile)
+        If wbResult = True Then CheckWorkBook (MasterFile)
+        wbExists = CheckFileExists(OutPath, MasterFile, ".xlsx")
+        If wbExists = True Then MasterFile = ChangeName(wbExists, OutPath, MasterFile) ' Change MasterFile
+        OutFileName = SaveReturnXLSX(wbMaster, MasterSheet, OutPath, MasterFile)
+        wbMaster.Close SaveChanges:=False
+        'macroBook.Save
+
+    Next refIndex
 
     ' Finish Time
     end_time = Now()

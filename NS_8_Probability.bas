@@ -70,12 +70,12 @@ End Function
 ' Date Created : March 10, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 10, 2014
+' Date Edited  : August 14, 2015
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
 ' Title        : NonLabelArray
-' Description  : This function initializes the lblArr array.
+' Description  : This function initializes the nonlblArr array.
 ' Parameters   : -
 ' Returns      : -
 '---------------------------------------------------------------------

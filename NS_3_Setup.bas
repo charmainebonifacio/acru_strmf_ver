@@ -46,17 +46,16 @@ End Function
 ' Returns      : Boolean
 '---------------------------------------------------------------------
 Function Analyze_Multi_ACRU_Out_xxxx(ByRef wbMaster As Workbook, _
-ByRef MasterSheet As Worksheet, ByRef MasterFile As String) As Boolean
+ByRef MasterSheet As Worksheet, ByRef MasterFile As String, _
+ByVal FileCount As Integer) As Boolean
 
-    Dim refIndex As Integer, FileCount As Integer, WrongFileCount As Integer
+    Dim refIndex As Integer, WrongFileCount As Integer
     Dim vTempVer As String, colExists As Boolean
     Dim formatDate As String
 
     ' Disable all the pop-up menus
     Application.ScreenUpdating = False
     Analyze_Multi_ACRU_Out_xxxx = False
-
-    FileCount = 0
     WrongFileCount = 0
 
     ' Create a Master Workbook
@@ -64,13 +63,8 @@ ByRef MasterSheet As Worksheet, ByRef MasterFile As String) As Boolean
     Set MasterSheet = wbMaster.Worksheets(1)
     MasterSheet.Name = "OriginalData"
 
-    ' Call each file...
-    For refIndex = LBound(HRUarr) To UBound(HRUarr)
-        FileCount = FileCount + 1
-        HRUNUM = HRUarr(refIndex)
-        colExists = Setup_ACRU_OUT_XXXX(FileCount, MasterSheet)
-        If colExists = False Then WrongFileCount = WrongFileCount + 1
-    Next refIndex
+    colExists = Setup_ACRU_OUT_XXXX(FileCount, MasterSheet)
+    If colExists = False Then WrongFileCount = WrongFileCount + 1
 
     ' Check the variable specified by the user
     If WrongFileCount = 0 Then
@@ -96,7 +90,7 @@ End Function
 ' Title        : Setup_ACRU_OUT_XXXX
 ' Description  : This function sets up the ACRU output file. It finds
 '                a specific column and copies the values within it.
-' Parameters   : Integer, String, Worksheet
+' Parameters   : Integer, Worksheet
 ' Returns      : Boolean
 '---------------------------------------------------------------------
 Function Setup_ACRU_OUT_XXXX(ByVal FileCount As Integer, _
@@ -150,7 +144,7 @@ ByRef MasterSheet As Worksheet) As Boolean
     ' Process Headers
     If FileCount = 1 Then Call ColumnHeader(wsACRU, headerArray(), varLastRow, varLastColumn)
     ' Once validation goes through, then setup ACRU files
-    If FileCount = 1 Then Call CopyDate(wsACRU, MasterSheet, varLastRow)
+    Call CopyDate(wsACRU, MasterSheet, varLastRow)
     For varInd = LBound(OutName) To UBound(OutName)
         VarToFind = Trim(UCase(OutName(varInd)))
         Call CopyValues(wsACRU, MasterSheet, VarToFind, varLastRow)
