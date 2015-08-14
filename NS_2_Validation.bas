@@ -3,7 +3,7 @@ Attribute VB_Name = "NS_2_Validation"
 ' Date Created : August 2 2013
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : August 2, 2013
+' Date Edited  : August 14, 2015
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -21,7 +21,7 @@ Function ValidateDirectory() As Boolean
     Dim Sep As String
     Dim tableResult As Boolean
     Dim MessageSummary As String, SummaryTitle As String
-    
+
     Application.ScreenUpdating = False
     ValidateDirectory = True
     tableResult = True
@@ -44,14 +44,15 @@ Function ValidateDirectory() As Boolean
     If fileCheck = False Then GoTo Cancel
     If fileCheck = True Then
         ' Setup InPath and OutPath
+        InPath = ReturnFolder(filePath)
         vResponse = MsgBox("Would you like to select an output directory?", vbYesNo)
         If vResponse = vbYes Then
             OutPath = GetFolder
             OutPath = ReturnFolder(OutPath)
-        Else: OutPath = ReturnFolder(filePath)
+        Else: OutPath = InPath ' Simply use the current file directory
         End If
     End If
-    
+
 Cancel:
     If TypeName(openFile) = "Boolean" Then
         ValidateDirectory = False
@@ -86,14 +87,14 @@ ByRef filePath As String, ByRef HRUarr() As String) As Boolean
     Dim Sep As String
     Dim Top As Integer, Bottom As Integer
     Dim FileCounter As Integer, refIndex As Integer
-    
+
     ' Disable all the pop-up menus
     Application.ScreenUpdating = False
     ACRU_OUTFILE_Selection = False
-    
+
     ACRUOUT = "ACRU_Out"
     If TypeName(openFile) = "Variant()" Then FileCounter = 0
-    
+
     '-------------------------------------------------------------
     ' Extract the appropriate file names...
     '-------------------------------------------------------------
@@ -112,13 +113,13 @@ ByRef filePath As String, ByRef HRUarr() As String) As Boolean
         Else: Exit Function ' Don't sort array
         End If
     Next
-    
+
     ' Sort Array!
     Top = UBound(HRUarr)
     Bottom = LBound(HRUarr)
     Call QuickSort(HRUarr(), Bottom, Top)
     ACRU_OUTFILE_Selection = True
-    
+
 Cancel:
 End Function
 '---------------------------------------------------------------------
@@ -139,12 +140,12 @@ Function QuickSort(strArray() As String, intBottom As Integer, intTop As Integer
 
     Dim strPivot As String, strTemp As String
     Dim intBottomTemp As Integer, intTopTemp As Integer
-    
+
     intBottomTemp = intBottom
     intTopTemp = intTop
-    
+
     strPivot = strArray((intBottom + intTop) \ 2)
-    
+
     While (intBottomTemp <= intTopTemp)
         '  comparison of the values is a descending sort
         While (strArray(intBottomTemp) < strPivot And intBottomTemp < intTop)
@@ -163,10 +164,9 @@ Function QuickSort(strArray() As String, intBottom As Integer, intTop As Integer
             intTopTemp = intTopTemp - 1
         End If
     Wend
-    
+
     'the function calls itself until everything is in good order
     If (intBottom < intTopTemp) Then QuickSort strArray, intBottom, intTopTemp
     If (intBottomTemp < intTop) Then QuickSort strArray, intBottomTemp, intTop
 
 End Function
-

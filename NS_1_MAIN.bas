@@ -1,6 +1,7 @@
 Attribute VB_Name = "NS_1_MAIN"
 Public HRUNUM As String
 Public outRUNVAL As String
+Public InPath As String
 Public OutPath As String
 Public OutDate As String
 Public OutName() As String

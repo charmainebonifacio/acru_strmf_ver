@@ -89,7 +89,7 @@ End Function
 ' Date Created : July 29, 2013
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : July 29, 2013
+' Date Edited  : August 14, 2015
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -113,7 +113,7 @@ ByRef MasterSheet As Worksheet) As Boolean
     Application.ScreenUpdating = False
     Setup_ACRU_OUT_XXXX = True
 
-    tmpFile = OutPath & "ACRU_Out." & HRUNUM
+    tmpFile = InPath & "ACRU_Out." & HRUNUM
     arrayText = Array(Array(1, 1), Array(2, 1), Array(3, 1), Array(4, 1), _
             Array(5, 1), Array(6, 1), Array(7, 1), Array(8, 1), Array(9, 1), _
             Array(10, 1), Array(11, 1), Array(12, 1), Array(13, 1), _
