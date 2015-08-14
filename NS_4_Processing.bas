@@ -3,7 +3,7 @@ Attribute VB_Name = "NS_4_Processing"
 ' Date Created : February 22, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 4, 2014
+' Date Edited  : March 10, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -87,16 +87,20 @@ ByRef SeriesEndYear As String, ByRef DlyLastRow As Long)
     Next
     Debug.Print "The NashData Row count: " & newLastRow
     Debug.Print "Missing Values Count: " & CountMissingValues
-    ActiveSheet.Range(Cells(1, newLastCol - 1), _
-        Cells(newLastRow, newLastCol - 1)).AutoFilter Field:=1, Criteria1:="=-99.9"
-    Call FindLastRowColumn(newLastRow, newLastCol)
-    Range(Cells(2, 1), Cells(newLastRow, newLastCol)).Select
-    Selection.Delete Shift:=xlUp
 
-    ' Remove AutoFilter
-    ActiveSheet.Range(Cells(1, newLastCol - 1), _
-        Cells(newLastRow, newLastCol - 1)).AutoFilter Field:=1
-    Selection.AutoFilter
+    ' Auto New Filter
+    If CountMissingValues >= 1 Then
+        ActiveSheet.Range(Cells(1, newLastCol - 1), _
+            Cells(newLastRow, newLastCol - 1)).AutoFilter Field:=1, Criteria1:="=-99.9"
+        Call FindLastRowColumn(newLastRow, newLastCol)
+        Range(Cells(2, 1), Cells(newLastRow, newLastCol)).Select
+        Selection.Delete Shift:=xlUp
+        ActiveSheet.Range(Cells(1, newLastCol - 1), _
+            Cells(newLastRow, newLastCol - 1)).AutoFilter Field:=1
+        Selection.AutoFilter
+    End If
+
+    ' Re-calculate Auto New Filter
     Call FindLastRowColumn(newLastRow, newLastCol)
     Debug.Print "After removing all missing values, the NashData Row count: " & newLastRow
     DlyLastRow = newLastRow

@@ -11,6 +11,8 @@ Public headerArray() As String
 Public areaArray() As Double
 Public varLastRow As Long
 Public varLastColumn As Long
+Public lblArr() As Long
+Public nonlblArr() As Long
 '---------------------------------------------------------------------
 ' Date Created : February 21, 2014
 ' Created By   : Charmaine Bonifacio
@@ -33,7 +35,7 @@ End Sub
 ' Date Created : February 21, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 4, 2014
+' Date Edited  : March 11, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -136,6 +138,7 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
     ' Create Daily Data Probability Worksheet and Graph
     ' Worksheet #8, #9
     '-------------------------------------------------------------
+    Call NashProbabilityWorksheet(wbMaster, DailyLastRow, MonthlyLastRow)
 
     '-------------------------------------------------------------
     ' Create Monthly Data Probability Worksheet and Graph
@@ -153,8 +156,9 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
     OutFileName = SaveReturnXLSX(wbMaster, MasterSheet, OutPath, MasterFile)
     wbMaster.Close SaveChanges:=False
 
+    ' Finish Time
     end_time = Now()
-    ProcessingTime = DateDiff("n", CDate(start_time), CDate(end_time))
+    ProcessingTime = DateDiff("s", CDate(start_time), CDate(end_time))
     MessageSummary = MacroTimer(ProcessingTime, OutFileName)
     MsgBox MessageSummary, vbOKOnly, SummaryTitle
 

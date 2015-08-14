@@ -3,7 +3,7 @@ Attribute VB_Name = "NS_6_Summary"
 ' Date Created : February 27, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 4, 2014
+' Date Edited  : March 11, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -115,9 +115,9 @@ ByRef tmpShtNum As Long)
     Range("A6").Value = "N"
     Range("A7").Value = "OBS N"
     Range("A8").Value = "SIM N"
-    Range("A9").Value = "% Difference"
+    Range("A9").Value = "% DIFFERENCE"
 
-    Range("A11").Value = "SUM of Q (mm)"
+    Range("A11").Value = "SUM OF Q (mm)"
     Range("A12").Value = "Sum OBS Q"
     Range("A13").Value = "Sum SIM Q"
     Range("A14").Value = "MAQ"
@@ -127,17 +127,17 @@ ByRef tmpShtNum As Long)
         .Value = "VARIANCE (mm2)"
         .Characters(Start:=13, Length:=1).Font.Superscript = True
     End With
-    Range("A17").Value = "OBS Variance"
-    Range("A18").Value = "SIM Variance"
-    Range("A19").Value = "% Difference"
+    Range("A17").Value = "OBS VARIANCE"
+    Range("A18").Value = "SIM VARIANCE"
+    Range("A19").Value = "% DIFFERENCE"
 
     Range("A21").Value = "STANDARD DEVIATION (mm)"
     Range("A22").Value = "OBS STD"
     Range("A23").Value = "SIM STD"
-    Range("A24").Value = "% Difference"
+    Range("A24").Value = "% DIFFERENCE"
 
     Range("A26").Value = "*GOODNESS OF FIT"
-    Range("A27").Value = "Slope of Line"
+    Range("A27").Value = "SLOPE OF LINE"
     Range("A28").Value = "R2"
     Range("A28").Characters(Start:=2, Length:=1).Font.Superscript = True
 
@@ -209,9 +209,9 @@ ByRef tmpShtNum As Long)
 
     ' Enter Stats Header Information
     Range("E2").Value = "NASH-SUTCLIFFE COEFFICIENT"
-    Range("E3").Value = "SUM of (O-P)^2"
-    Range("E4").Value = "SUM of (O-Oavg)^2"
-    Range("E5").Value = "1 - [SUM of (O-P)^2 / SUM of (O-Oavg)^2]"
+    Range("E3").Value = "SUM OF (O-P)^2"
+    Range("E4").Value = "SUM OF (O-Oavg)^2"
+    Range("E5").Value = "1 - [SUM OF (O-P)^2 / SUM OF (O-Oavg)^2]"
 
     Range("E7").Value = "**MODIFIED NASH-SUTCLIFFE COEFFICIENT"
     Range("E8").Value = "SUM of |O-P|"
@@ -277,7 +277,7 @@ ByRef tmpShtNum As Long)
     Range("E13").Value = note1
     Range("E13:G17").Merge
 
-    note2 = "**Modified Nash-Sutcliffe only to be used if regular Nash-Sutcliffe values are bad--See Legates, D.R., & McCabe, G.J. (1999). Evaluating the use of �goodness-of-fit� measures in hydrologic and hydroclimatic model validation. Water Resources Research, 35(1), 233-241."
+    note2 = "**Modified Nash-Sutcliffe only to be used if regular Nash-Sutcliffe values are bad--See Legates, D.R., & McCabe, G.J. (1999). Evaluating the use of “goodness-of-fit” measures in hydrologic and hydroclimatic model validation. Water Resources Research, 35(1), 233-241."
     Range("E20").Value = note2
     Range("E20:G27").Merge
 
@@ -300,7 +300,7 @@ End Function
 ' Date Created : March 1, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 1, 2014
+' Date Edited  : March 10, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -334,27 +334,43 @@ ByVal calIndex As Long)
         wkName = monSht.Name
     End If
 
+    ' MEAN OBS
     Range("A3").Offset(0, calIndex).Value = "=" & wkName & "!R2C4"
+    ' MEAN SIM
     Range("A4").Offset(0, calIndex).Value = "=" & wkName & "!R2C5"
-
+    ' OBS N
     Range("A7").Offset(0, calIndex).Value = "=Count(" & wkName & "!B2:B" & shtLastRow & ")"
+    ' SIM N
     Range("A8").Offset(0, calIndex).Value = "=Count(" & wkName & "!C2:C" & shtLastRow & ")"
-    Range("A9").Offset(0, calIndex).Value = "=(R7C" & startCol & "/R8C" & startCol & "*100)-100"
-
+    ' % DIFFERENCE
+    Range("A9").Offset(0, calIndex).Value = "=(R8C" & startCol & "/R7C" & startCol & "*100)-100"
+    ' SUM OBS Q
     Range("A12").Offset(0, calIndex).Value = "=SUM(" & wkName & "!B2:B" & shtLastRow & ")"
+    ' SUM SIM Q
     Range("A13").Offset(0, calIndex).Value = "=SUM(" & wkName & "!C2:C" & shtLastRow & ")"
-    Range("A14").Offset(0, calIndex).Value = "=(R12C" & startCol & "/R13C" & startCol & "*100)-100"
-
-    Range("A17").Offset(0, calIndex).Value = "=VAR(" & wkName & "!B2:B" & shtLastRow & ")"
-    Range("A18").Offset(0, calIndex).Value = "=VAR(" & wkName & "!C2:C" & shtLastRow & ")"
-    Range("A19").Offset(0, calIndex).Value = "=(R17C" & startCol & "/R18C" & startCol & "*100)-100"
-
-    Range("A22").Offset(0, calIndex).Value = "=STDEV(" & wkName & "!B2:B" & shtLastRow & ")"
-    Range("A23").Offset(0, calIndex).Value = "=STDEV(" & wkName & "!C2:C" & shtLastRow & ")"
-    Range("A24").Offset(0, calIndex).Value = "=(R22C" & startCol & "/R23C" & startCol & "*100)-100"
-
+    ' MAQ
+    Range("A14").Offset(0, calIndex).Value = "=(R13C" & startCol & "/R12C" & startCol & "*100)-100"
+    ' OBS VARIANCE
+    If Val(Application.Version) < 12 Then Range("A17").Offset(0, calIndex).Value = "=VAR(" & wkName & "!B2:B" & shtLastRow & ")"
+    If Val(Application.Version) > 12 Then Range("A17").Offset(0, calIndex).Value = "=VAR.S(" & wkName & "!B2:B" & shtLastRow & ")"
+    ' OBS VARIANCE
+    If Val(Application.Version) < 12 Then Range("A18").Offset(0, calIndex).Value = "=VAR(" & wkName & "!C2:C" & shtLastRow & ")"
+    If Val(Application.Version) > 12 Then Range("A18").Offset(0, calIndex).Value = "=VAR.S(" & wkName & "!C2:C" & shtLastRow & ")"
+    ' % DIFFERENCE
+    Range("A19").Offset(0, calIndex).Value = "=(R18C" & startCol & "/R17C" & startCol & "*100)-100"
+    ' OBS STD
+    If Val(Application.Version) < 12 Then Range("A22").Offset(0, calIndex).Value = "=STDEV(" & wkName & "!B2:B" & shtLastRow & ")"
+    If Val(Application.Version) > 12 Then Range("A22").Offset(0, calIndex).Value = "=STDEV.S(" & wkName & "!B2:B" & shtLastRow & ")"
+    ' SIM STD
+    If Val(Application.Version) < 12 Then Range("A23").Offset(0, calIndex).Value = "=STDEV(" & wkName & "!C2:C" & shtLastRow & ")"
+    If Val(Application.Version) > 12 Then Range("A23").Offset(0, calIndex).Value = "=STDEV.S(" & wkName & "!C2:C" & shtLastRow & ")"
+    ' % DIFFERENCE
+    Range("A24").Offset(0, calIndex).Value = "=(R23C" & startCol & "/R22C" & startCol & "*100)-100"
+    ' Slope of Line
     Range("A27").Offset(0, calIndex).Value = "=SLOPE(" & wkName & "!C2:C" & shtLastRow & "," & wkName & "!B2:B" & shtLastRow & ")"
+    ' R Squared
     Range("A28").Offset(0, calIndex).Value = "=RSQ(" & wkName & "!C2:C" & shtLastRow & "," & wkName & "!B2:B" & shtLastRow & ")"
+    Range("A1").Select
 
 End Function
 '---------------------------------------------------------------------
@@ -395,12 +411,17 @@ ByVal calIndex As Long)
         wkName = monSht.Name
     End If
 
+    ' SUM of (O-P)^2
     Range("E3").Offset(0, calIndex).Value = "=SUM(" & wkName & "!F2:F" & shtLastRow & ")"
+    ' SUM of(O - Oavg) ^ 2
     Range("E4").Offset(0, calIndex).Value = "=SUM(" & wkName & "!G2:G" & shtLastRow & ")"
+    ' 1 - [SUM of (O-P)^2 / SUM of (O-Oavg)^2]
     Range("E5").Offset(0, calIndex).Value = "=1-(R3C" & startCol & "/R4C" & startCol & ")"
-
+    ' SUM of |O-P|
     Range("E8").Offset(0, calIndex).Value = "=SUM(" & wkName & "!H2:H" & shtLastRow & ")"
+    ' SUM of |O-Oavg|
     Range("E9").Offset(0, calIndex).Value = "=SUM(" & wkName & "!I2:I" & shtLastRow & ")"
+    ' 1 - [SUM of |O-P| / SUM of |O-Oavg|]
     Range("E10").Offset(0, calIndex).Value = "=1-(R8C" & startCol & "/R9C" & startCol & ")"
 
 End Function
