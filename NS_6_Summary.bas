@@ -3,7 +3,7 @@ Attribute VB_Name = "NS_6_Summary"
 ' Date Created : February 27, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : April 5, 2014
+' Date Edited  : April 6, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -17,7 +17,7 @@ Function NashSummaryWorksheet(ByRef wbMaster As Workbook, _
 ByVal DlyLastRow As Long, ByVal MlyLastRow As Long)
 
     Dim tmpSht As Worksheet
-    Dim lastRow As Long, lastCol As Long
+    Dim LastRow As Long, lastCol As Long
     Dim statsCol As Long
 
     ' Activate Appropriate Worksheet #
@@ -85,7 +85,7 @@ Function SummaryTextLayout(ByRef wbMaster As Workbook, _
 ByRef tmpShtNum As Long)
 
     Dim tmpSht As Worksheet
-    Dim lastRow As Long, lastCol As Long
+    Dim LastRow As Long, lastCol As Long
     Dim statsCol As Long
 
     ' Activate Appropriate Worksheet #
@@ -125,7 +125,7 @@ ByRef tmpShtNum As Long)
     Range("A16").Activate
     With ActiveCell
         .Value = "VARIANCE (mm2)"
-        .Characters(Start:=13, Length:=1).Font.Superscript = True
+        .Characters(start:=13, Length:=1).Font.Superscript = True
     End With
     Range("A17").Value = "OBS VARIANCE"
     Range("A18").Value = "SIM VARIANCE"
@@ -139,7 +139,7 @@ ByRef tmpShtNum As Long)
     Range("A26").Value = "*GOODNESS OF FIT"
     Range("A27").Value = "SLOPE OF LINE"
     Range("A28").Value = "R2"
-    Range("A28").Characters(Start:=2, Length:=1).Font.Superscript = True
+    Range("A28").Characters(start:=2, Length:=1).Font.Superscript = True
 
     ' Enter Formatting for Headers
     Range("A2:A2,A6:A6,A11:A11,A16:A16,A21:A21,A26:A26").Select
@@ -189,7 +189,7 @@ Function NashTextLayout(ByRef wbMaster As Workbook, _
 ByRef tmpShtNum As Long)
 
     Dim tmpSheet As Worksheet
-    Dim lastRow As Long, lastCol As Long
+    Dim LastRow As Long, lastCol As Long
     Dim statsCol As Long
 
     ' Activate Appropriate Worksheet #

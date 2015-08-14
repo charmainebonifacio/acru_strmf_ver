@@ -35,7 +35,7 @@ End Sub
 ' Date Created : February 21, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 11, 2014
+' Date Edited  : April 6, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -47,6 +47,7 @@ End Sub
 '---------------------------------------------------------------------
 Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
 
+    Dim macroBook As Workbook, macroSheet As Worksheet
     Dim wbMaster As Workbook, MasterSheet As Worksheet
     Dim tmpSheet As Worksheet, tmpSheetNum As Long
     Dim MasterFile As String, OutFileName As String
@@ -70,6 +71,8 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
     ' Initialize variables to find into an array
     '-------------------------------------------------------------
     Call InitVarArray
+    Set macroBook = ActiveWorkbook
+    Set macroSheet = macroBook.Worksheets(2)
 
     '-------------------------------------------------------------
     ' Validate User Input
@@ -135,15 +138,18 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
         inputMaxAxis, 2)
 
     '-------------------------------------------------------------
-    ' Create Daily Data Probability Worksheet and Graph
-    ' Worksheet #8, #9
+    ' Create Daily Data Probability Worksheet and Graphs
+    ' Worksheet #8, #9, #10, #11
     '-------------------------------------------------------------
-    Call NashProbabilityWorksheet(wbMaster, DailyLastRow, MonthlyLastRow)
+    Call NashProbabilityWorksheet(wbMaster, macroBook, macroSheet, _
+        DailyLastRow, MonthlyLastRow)
 
     '-------------------------------------------------------------
-    ' Create Monthly Data Probability Worksheet and Graph
-    ' Worksheet #10, #11
+    ' Create Streamflow Worksheet and Yearly Streamflow Graphs
+    ' Copy Worksheet #3
+    ' Worksheet #12
     '-------------------------------------------------------------
+    Call NashStreamflowWorksheet(wbMaster, StartYear, EndYear)
 
     '-------------------------------------------------------------
     ' Save Workbook and all the progress as follows:
@@ -155,6 +161,7 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
     If wbExists = True Then MasterFile = ChangeName(wbExists, OutPath, MasterFile) ' Change MasterFile
     OutFileName = SaveReturnXLSX(wbMaster, MasterSheet, OutPath, MasterFile)
     wbMaster.Close SaveChanges:=False
+    macroBook.Save
 
     ' Finish Time
     end_time = Now()

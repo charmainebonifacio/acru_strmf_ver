@@ -3,19 +3,20 @@ Attribute VB_Name = "NS_7_Graphs"
 ' Date Created : February 27, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : April 5, 2014
+' Date Edited  : April 6, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
 ' Title        : CreateStreamflowGraph
 ' Description  : This function creates the daily or the monthly
-'                streamflow graphs.
+'                streamflow graphs using the observed against
+'                simulated data.
 ' Parameters   : Workbook, Worksheet, Long, Long, Long, Long
 ' Returns      : -
 '---------------------------------------------------------------------
 Function CreateStreamflowGraph(ByRef wbMaster As Workbook, _
 ByRef tmpSheet As Worksheet, ByVal tmpShtNum As Long, _
-ByVal lastRow As Long, ByVal maxVal As Long, ByVal calIndex As Long)
+ByVal LastRow As Long, ByVal maxVal As Long, ByVal calIndex As Long)
 
     Dim txtText As String
     Dim gridunits As Integer
@@ -44,11 +45,12 @@ ByVal lastRow As Long, ByVal maxVal As Long, ByVal calIndex As Long)
         .HasTitle = False
     End With
 
+    ' Series Information
     Dim seriesData As Series
     Set seriesData = ActiveChart.SeriesCollection(1)
     seriesData.Name = "Data"
-    seriesData.Values = "=" & tmpSheet.Name & "!C2:C" & lastRow
-    seriesData.XValues = "=" & tmpSheet.Name & "!B2:B" & lastRow
+    seriesData.Values = "=" & tmpSheet.Name & "!C2:C" & LastRow
+    seriesData.XValues = "=" & tmpSheet.Name & "!B2:B" & LastRow
     With seriesData
         .MarkerStyle = 8
         .MarkerBackgroundColorIndex = 1
@@ -82,15 +84,13 @@ ByVal lastRow As Long, ByVal maxVal As Long, ByVal calIndex As Long)
     ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Text = "Observed Streamflow"
     ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Font.Size = 28
 
-    ' Extra Trendline
+    ' Add the Trendline
     ActiveChart.SeriesCollection.NewSeries
     Dim trendLine As Series
     Set trendLine = ActiveChart.SeriesCollection(2)
     trendLine.Name = "=""Trendline"""
-    trendLine.XValues = "={0,0}"
-    trendLine.Values = "={0,0}"
-    'trendLine.XValues = "={0," & maxVal & "}"
-    'trendLine.Values = "={0," & maxVal & "}"
+    trendLine.XValues = "={0," & maxVal & "}"
+    trendLine.Values = "={0," & maxVal & "}"
     With trendLine
         .Border.Weight = xlMedium
         .Border.ColorIndex = 1
