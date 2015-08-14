@@ -580,7 +580,7 @@ End Function
 ' Parameters   : -
 ' Returns      : Long
 '---------------------------------------------------------------------
-Function lastRow() As Long
+Function LastRow() As Long
 
     Dim LastRowIndex As Long
     
@@ -588,7 +588,7 @@ Function lastRow() As Long
        LastRowIndex = Cells.Find(What:="*", After:=Range("A1"), SearchOrder:=xlByRows, SearchDirection:=xlPrevious).Row
     End If
     
-    lastRow = LastRowIndex
+    LastRow = LastRowIndex
     
 End Function
 '---------------------------------------------------------------------
@@ -662,7 +662,7 @@ End Function
 Function FindSpecificRange(DestSheet As Worksheet, ByVal FirstRowN As Long, _
 ByVal FirstColN As Long, ByVal LastRowN As Long, ByVal LastColN As Long)
 
-    Dim FirstRow&, FirstCol&, lastRow&, lastCol&
+    Dim FirstRow&, FirstCol&, LastRow&, lastCol&
     Dim myUsedRange As Range
         
     ' Activate the correct worksheet
@@ -670,12 +670,12 @@ ByVal FirstColN As Long, ByVal LastRowN As Long, ByVal LastColN As Long)
     
     FirstRow = FirstRowN
     FirstCol = FirstColN
-    lastRow = LastRowN
+    LastRow = LastRowN
     lastCol = LastColN
     
     ' Select Range using FirstRow, FirstCol, LastRow, LastCol
     With ActiveWorkbook.ActiveSheet
-        .Range(Cells(FirstRow, FirstCol), Cells(lastRow, lastCol)).Select
+        .Range(Cells(FirstRow, FirstCol), Cells(LastRow, lastCol)).Select
     End With
     
 End Function
@@ -697,7 +697,7 @@ End Function
 '---------------------------------------------------------------------
 Function RowCheck(WKSheet As Worksheet)
 
-    Dim lastRow As Long
+    Dim LastRow As Long
     
     ' Activate correct worksheet
     WKSheet.Activate
@@ -714,8 +714,8 @@ Function RowCheck(WKSheet As Worksheet)
     ' Check for the last used row. Select the row after the
     ' last known row.
     '-------------------------------------------------------------
-    lastRow = Cells.Find(What:="*", SearchDirection:=xlPrevious, SearchOrder:=xlByRows).Row
-    ActiveSheet.Range("A" & lastRow + 1).Select
+    LastRow = Cells.Find(What:="*", SearchDirection:=xlPrevious, SearchOrder:=xlByRows).Row
+    ActiveSheet.Range("A" & LastRow + 1).Select
 
 End Function
 '---------------------------------------------------------------------
@@ -735,7 +735,7 @@ End Function
 '---------------------------------------------------------------------
 Function FindRange(WKSheet As Worksheet)
 
-    Dim FirstRow&, FirstCol&, lastRow&, lastCol&
+    Dim FirstRow&, FirstCol&, LastRow&, lastCol&
     Dim myUsedRange As Range
         
     ' Activate the correct worksheet
@@ -744,11 +744,11 @@ Function FindRange(WKSheet As Worksheet)
     ' Define variables
     FirstRow = Cells.Find(What:="*", SearchDirection:=xlNext, SearchOrder:=xlByRows).Row
     FirstCol = Cells.Find(What:="*", SearchDirection:=xlNext, SearchOrder:=xlByColumns).Column
-    lastRow = Cells.Find(What:="*", SearchDirection:=xlPrevious, SearchOrder:=xlByRows).Row
+    LastRow = Cells.Find(What:="*", SearchDirection:=xlPrevious, SearchOrder:=xlByRows).Row
     lastCol = Cells.Find(What:="*", SearchDirection:=xlPrevious, SearchOrder:=xlByColumns).Column
     
     ' Select Range using FirstRow, FirstCol, LastRow, LastCol
-    Set myUsedRange = Range(Cells(FirstRow, FirstCol), Cells(lastRow, lastCol))
+    Set myUsedRange = Range(Cells(FirstRow, FirstCol), Cells(LastRow, lastCol))
     myUsedRange.Select
     
 End Function

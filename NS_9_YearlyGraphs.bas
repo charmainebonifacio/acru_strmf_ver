@@ -3,14 +3,14 @@ Attribute VB_Name = "NS_9_YearlyGraphs"
 ' Date Created : March 25, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 27, 2014
+' Date Edited  : April 11, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
 ' Title        : NashStreamflowWorksheet
 ' Description  : This function copies the data from NashData worksheet
 '                and creates yearly streamflow graphs for the entire
-'                timeseries
+'                timeseries.
 ' Parameters   : Worksheet
 ' Returns      : -
 '---------------------------------------------------------------------
@@ -90,7 +90,6 @@ ByVal StartYear As String, ByVal EndYear As String)
         Debug.Print SR, ER
         If SR = 0 Or ER = 0 Then Exit For
         Call CreateYearlyStreamflowGraph(wbMaster, startIndex, SR, ER)
-        If yearCount = 10 Then Exit For
     Next startIndex
 
 End Function

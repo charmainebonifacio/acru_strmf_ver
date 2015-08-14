@@ -3,7 +3,7 @@ Attribute VB_Name = "NS_WARNING"
 ' Date Created : July 31, 2013
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------------------------
-' Date Edited  : July 31, 2013
+' Date Edited  : March 10, 2014
 ' Edited By    : Charmaine Bonifacio
 ' Comments By  : Charmaine Bonifacio
 '---------------------------------------------------------------------------------------
@@ -20,10 +20,11 @@ Function MacroTimer(ByVal TimeElapsed As Long, ByVal MasterFile As String) As St
     
     NotifyUser = "MACRO RUN IS SUCCESSFUL!" & vbCrLf
     NotifyUser = NotifyUser & vbCrLf
-    NotifyUser = NotifyUser & "The macro has finished processing ACRU output files." & vbCrLf
-    NotifyUser = NotifyUser & "Processing took a total of " & TimeElapsed & " minutes." & vbCrLf
+    NotifyUser = NotifyUser & "The macro has finished processing ACRU output files. "
+    NotifyUser = NotifyUser & "Processing took a total of " & TimeElapsed & " seconds." & vbCrLf
     NotifyUser = NotifyUser & vbCrLf
-    NotifyUser = NotifyUser & "File Output: " & MasterFile
+    NotifyUser = NotifyUser & "Your OUTPUT file and directory can be found here: "
+    NotifyUser = NotifyUser & MasterFile
 
     MacroTimer = NotifyUser
     
