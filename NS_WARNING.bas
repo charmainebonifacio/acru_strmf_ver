@@ -17,7 +17,7 @@ Attribute VB_Name = "NS_WARNING"
 Function MacroTimer(ByVal TimeElapsed As Long, ByVal MasterFile As String) As String
 
     Dim NotifyUser As String
-    
+
     NotifyUser = "MACRO RUN IS SUCCESSFUL!" & vbCrLf
     NotifyUser = NotifyUser & vbCrLf
     NotifyUser = NotifyUser & "The macro has finished processing ACRU output files. "
@@ -27,13 +27,13 @@ Function MacroTimer(ByVal TimeElapsed As Long, ByVal MasterFile As String) As St
     NotifyUser = NotifyUser & MasterFile
 
     MacroTimer = NotifyUser
-    
+
 End Function
 '---------------------------------------------------------------------------------------
 ' Date Created : June 13, 2013
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------------------------
-' Date Edited  : February 21, 2014
+' Date Edited  : August 14, 2015
 ' Edited By    : Charmaine Bonifacio
 ' Comments By  : Charmaine Bonifacio
 '---------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ End Function
 Function MacroCancel(ByVal notificationIndex As Integer) As String
 
     Dim Message As String, NotifyUser As String
-    
+
     Select Case notificationIndex
         Case 1
             Message = "The selected ACRU output file is invalid. Please select another file."
@@ -55,10 +55,12 @@ Function MacroCancel(ByVal notificationIndex As Integer) As String
             Message = "The workbook already exists. The tool will save to a new file with the same run number."
         Case 3
             Message = "The user specified variable name does not exist in one or more of the selected ACRU output files."
+        Case 4
+            Message = "The selected ACRU output only contains -99.9 values, making it impossible to do a comparison."
     End Select
-    
+
     NotifyUser = "The macro run has been cancelled. "
     NotifyUser = NotifyUser & Message
     MacroCancel = NotifyUser
-    
+
 End Function

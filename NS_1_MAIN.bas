@@ -107,6 +107,7 @@ Function NASHSUTCLIFF_MAIN(ByVal outRUNVAL As String)
         Call NashOrigSetupWorksheet(wbMaster, tmpSheet, StartYear, EndYear, DailyLastRow)
         ' Application.StatusBar = "Finished processing the original ACRU data for Nash SutCliff calculations."
         Set tmpSheet = Nothing
+        If DailyLastRow = 1 Then GoTo Cancel
 
         '-------------------------------------------------------------
         ' Copy Original Data but only keep DATE, OBS and SIM. Worksheet #3
@@ -189,8 +190,16 @@ Cancel:
         MessageSummary = MacroCancel(3)
         MsgBox MessageSummary, vbOKOnly, SummaryTitle
     End If
+    If DailyLastRow = 1 Then
+        MessageSummary = MacroCancel(4)
+        MsgBox MessageSummary, vbOKOnly, SummaryTitle
+        wbMaster.Close SaveChanges:=False
+    End If
     Set wbMaster = Nothing
     Set MasterSheet = Nothing
+    Set macroBook = Nothing
+    Set macroSheet = Nothing
+
 End Function
 '---------------------------------------------------------------------------------------
 ' Date Created : July 31, 2013
