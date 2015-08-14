@@ -3,7 +3,7 @@ Attribute VB_Name = "NS_4_Processing"
 ' Date Created : February 22, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 10, 2014
+' Date Edited  : April 7, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -21,7 +21,7 @@ ByRef SeriesEndYear As String, ByRef DlyLastRow As Long)
 
     Dim NewStartYearRow As Long
     Dim rngStart As Range, rng As Range
-    Dim startRange As Long, lastRow As Long
+    Dim startRange As Long, LastRow As Long
     Dim newLastCol As Long, newLastRow As Long
     Dim colRange1 As Long, colRange2 As Long
     Dim monthStr As String
@@ -40,7 +40,7 @@ ByRef SeriesEndYear As String, ByRef DlyLastRow As Long)
 
     ' Insert two new columns: Date and UNID
     ' Insert DATE column
-    lastRow = Range("A1").End(xlDown).Row
+    LastRow = Range("A1").End(xlDown).Row
     Range("A1").Offset(0, 2).Select
     Set rngStart = Selection
     startRange = rngStart.Column
@@ -50,7 +50,7 @@ ByRef SeriesEndYear As String, ByRef DlyLastRow As Long)
     Selection.EntireColumn.Insert
     ActiveCell.Value = "DATE"
     Range("A1").Offset(1, startRange).FormulaR1C1 = "=DATE(RC[-3],RC[-2],RC[-1])"
-    Range("A1").Offset(1, startRange).AutoFill Destination:=Range(Cells(2, colRange1), Cells(lastRow, colRange1))
+    Range("A1").Offset(1, startRange).AutoFill Destination:=Range(Cells(2, colRange1), Cells(LastRow, colRange1))
 
     ' Then Insert UNID column
     Range("A1").Offset(0, colRange1).Select
@@ -58,12 +58,12 @@ ByRef SeriesEndYear As String, ByRef DlyLastRow As Long)
     colRange2 = rng.Column
     Selection.EntireColumn.Insert
     ActiveCell.Value = "UNID"
-    For initRow = 2 To lastRow
+    For initRow = 2 To LastRow
         If Len(Cells(initRow, 2)) = 2 Then monthStr = Cells(initRow, 2)
         If Len(Cells(initRow, 2)) < 2 Then monthStr = "0" & Cells(initRow, 2)
         Range("A1").Offset(initRow - 1, colRange1).Value = Cells(initRow, 1) & monthStr
     Next initRow
-    Range(Cells(2, colRange2), Cells(lastRow, colRange2)).NumberFormat = "General"
+    Range(Cells(2, colRange2), Cells(LastRow, colRange2)).NumberFormat = "General"
 
     ' Change Headers
     Range("A1").Offset(0, colRange2).Value = "OBS"
@@ -71,8 +71,8 @@ ByRef SeriesEndYear As String, ByRef DlyLastRow As Long)
 
     ' Look at Series Start and End Years
     ' Once next year row is found, delete the first year data
-    Call FindYearRange(wbMaster, colRange1, lastRow, SeriesStartYear, SeriesEndYear)
-    NewStartYearRow = FindNashDailyStartYearRow(wbMaster, colRange1, lastRow, SeriesStartYear)
+    Call FindYearRange(wbMaster, colRange1, LastRow, SeriesStartYear, SeriesEndYear)
+    NewStartYearRow = FindNashDailyStartYearRow(wbMaster, colRange1, LastRow, SeriesStartYear)
     Range(Cells(2, 1), Cells(NewStartYearRow - 1, 1)).Select
     Selection.EntireRow.Delete
     Range("A1").Select
@@ -80,7 +80,7 @@ ByRef SeriesEndYear As String, ByRef DlyLastRow As Long)
     ' Remove -99.9 Values and its associated rows
     Call FindLastRowColumn(newLastRow, newLastCol)
     CountMissingValues = 0
-    For i = 2 To lastRow
+    For i = 2 To LastRow
         If Range("A1").Offset(i - 1, newLastCol - 2).Value = -99.9 Then
             CountMissingValues = CountMissingValues + 1
         End If
@@ -121,11 +121,11 @@ End Function
 ' Returns      : Long
 '---------------------------------------------------------------------
 Function FindNashDailyStartYearRow(ByRef wbMaster As Workbook, _
-ByVal curCol As Long, ByVal lastRow As Long, _
+ByVal curCol As Long, ByVal LastRow As Long, _
 ByVal SeriesStartYear As String) As Long
 
     Dim tmpSheet As Worksheet
-    Dim startRow As Long
+    Dim StartRow As Long
     Dim DateMonth As Long, DateDay As Long
     Dim SeriesStart As Date, SeriesEnd As Date
     Dim BASEDATE As Date
@@ -133,8 +133,8 @@ ByVal SeriesStartYear As String) As Long
 
     ' Initialize Variables
     FindNashDailyStartYearRow = 0
-    startRow = 2                        ' After header row
-    newYear = CInt(SeriesStartYear) + 1 ' add one to the current start year
+    StartRow = 2                        ' After header row
+    newYear = CInt(SeriesStartYear) + 1 ' Add one to the current start year
     newStartYear = CStr(newYear)        ' Convert to string
     BASEDATE = DateValue("01/01/" & newStartYear)  ' Create the base date to compare to
     Debug.Print newYear, newStartYear, BASEDATE
@@ -144,7 +144,7 @@ ByVal SeriesStartYear As String) As Long
     Set tmpSheet = wbMaster.Worksheets(Sheets.Count)
     tmpSheet.Activate
 
-    For i = startRow To lastRow
+    For i = StartRow To LastRow
         SeriesStart = DateValue(Cells(i, curCol).Value)
         DateMonth = DateDiff("m", SeriesStart, BASEDATE)
         DateDay = DateDiff("d", SeriesStart, BASEDATE)
@@ -160,7 +160,7 @@ End Function
 ' Date Created : February 22, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 4, 2014
+' Date Edited  : April 7 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -188,11 +188,13 @@ ByRef tmpSheet As Worksheet)
     ' Clean Worksheet!
     Columns("E").Delete   ' Delete the UNID
     Columns("D").Copy
-    Range("D1").PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
-        :=False, Transpose:=False
+    Range("D1").PasteSpecial Paste:=xlPasteValues, _
+        Operation:=xlNone, _
+        SkipBlanks:=False, _
+        Transpose:=False
     Selection.ColumnWidth = 13
 
-    ' Change Headers
+    ' Delete Unnecessary Columns
     If Range("A1").Offset(0, 0).Value = "YEAR" And _
         Range("A1").Offset(0, 1).Value = "MONTH" And _
         Range("A1").Offset(0, 2).Value = "DAY" Then
@@ -216,12 +218,12 @@ End Function
 ' Returns      : -
 '---------------------------------------------------------------------
 Function FindYearRange(ByRef wbMaster As Workbook, ByVal curCol As Long, _
-ByVal lastRow As Long, ByRef SeriesStartYear As String, _
+ByVal LastRow As Long, ByRef SeriesStartYear As String, _
 ByRef SeriesEndYear As String)
 
     Dim tmpSheet As Worksheet
-    Dim startRow As Long
-    startRow = 2 ' After header row
+    Dim StartRow As Long
+    StartRow = 2 ' After header row
 
     ' Check Original Data
     wbMaster.Activate
@@ -230,7 +232,7 @@ ByRef SeriesEndYear As String)
 
     ' Get Start and End Year
     SeriesStartYear = Cells(2, 1).Value
-    SeriesEndYear = Cells(lastRow, 1).Value
+    SeriesEndYear = Cells(LastRow, 1).Value
 
 End Function
 '---------------------------------------------------------------------
@@ -254,7 +256,7 @@ Function NashPivotSetupWorksheet(ByRef wbMaster As Workbook, _
 ByRef tmpSheet As Worksheet, ByRef SeriesStartYear As String, _
 ByRef SeriesEndYear As String, ByRef MlyLastRow As Long)
 
-    Dim LR As Long, LC As Long, lastRow As Long, newLastRow As Long
+    Dim LR As Long, LC As Long, LastRow As Long, newLastRow As Long
     Dim dataArray()
     Dim rngStart As Range, rng As Range
     Dim startRange As Long
@@ -267,7 +269,7 @@ ByRef SeriesEndYear As String, ByRef MlyLastRow As Long)
     MasterSheet.Activate
 
     ' Find Relevant Columns
-    lastRow = Range("A1").End(xlDown).Row
+    LastRow = Range("A1").End(xlDown).Row
     Call NashDataColumnHeader(ActiveSheet, dataArray(), LR, LC)
     For refIndex = LBound(dataArray) To UBound(dataArray)
         If dataArray(refIndex, 0) = "UNID" Then
@@ -284,7 +286,7 @@ ByRef SeriesEndYear As String, ByRef MlyLastRow As Long)
     pivotTableName = "PivotTable"
     Set pivotSheet = Sheets.Add(After:=Sheets(Sheets.Count))
     pivotSheet.Name = pivotTableName
-    newSrcData = "'" & MasterSheet.Name & "'!R1C" & startRange & ":R" & lastRow & "C" & startRange + 2
+    newSrcData = "'" & MasterSheet.Name & "'!R1C" & startRange & ":R" & LastRow & "C" & startRange + 2
     tblDest = "'" & pivotSheet.Name & "'!R1C1"
     ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, _
         SourceData:=newSrcData, _
@@ -314,8 +316,8 @@ ByRef SeriesEndYear As String, ByRef MlyLastRow As Long)
     Columns("A:C").ColumnWidth = 17
     Columns("A:C").PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
-    lastRow = Range("B1").End(xlDown).Row
-    tmpSheet.Cells(lastRow, 1).EntireRow.Delete
+    LastRow = Range("B1").End(xlDown).Row
+    tmpSheet.Cells(LastRow, 1).EntireRow.Delete
     If Range("A1").Offset(0, 1).Value = "Values" Then Rows(1).EntireRow.Delete
     Range("A1").Select
 

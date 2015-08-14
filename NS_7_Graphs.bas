@@ -1,9 +1,9 @@
 Attribute VB_Name = "NS_7_Graphs"
 '---------------------------------------------------------------------
-' Date Created : February 27, 2014
+' Date Created : March 8, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : April 6, 2014
+' Date Edited  : April 7, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -77,20 +77,22 @@ ByVal LastRow As Long, ByVal maxVal As Long, ByVal calIndex As Long)
     ' Add axis titles
     ActiveChart.SetElement (msoElementPrimaryCategoryAxisTitleAdjacentToAxis)
     ActiveChart.SetElement (msoElementPrimaryValueAxisTitleRotated)
-    ActiveChart.Axes(xlValue).TickLabels.Font.Size = 20
-    ActiveChart.Axes(xlCategory).TickLabels.Font.Size = 20
+    ActiveChart.Axes(xlValue).TickLabels.Font.Size = 16
+    ActiveChart.Axes(xlCategory).TickLabels.Font.Size = 16
     ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Text = "Simulated Streamflow"
-    ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Font.Size = 28
+    ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Font.Size = 26
     ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Text = "Observed Streamflow"
-    ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Font.Size = 28
+    ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Font.Size = 26
 
     ' Add the Trendline
     ActiveChart.SeriesCollection.NewSeries
     Dim trendLine As Series
     Set trendLine = ActiveChart.SeriesCollection(2)
     trendLine.Name = "=""Trendline"""
-    trendLine.XValues = "={0," & maxVal & "}"
-    trendLine.Values = "={0," & maxVal & "}"
+    trendLine.XValues = "={0,0}"
+    trendLine.Values = "={0,0}"
+    'trendLine.XValues = "={0," & maxVal & "}"
+    'trendLine.Values = "={0," & maxVal & "}"
     With trendLine
         .Border.Weight = xlMedium
         .Border.ColorIndex = 1

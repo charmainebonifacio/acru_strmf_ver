@@ -96,7 +96,7 @@ End Function
 ' Date Created : March 10, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : April 5, 2014
+' Date Edited  : April 7, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -329,18 +329,18 @@ ByVal sheetCount As Long)
     Sheets(newName).Move After:=Sheets(Sheets.Count)
 
     ' For Obs Series
-    ActiveChart.SeriesCollection(1).Name = "='" & sheetName & "'!$A$1"
-    ActiveChart.SeriesCollection(1).XValues = "='" & sheetName & "'!$D$2:$D$" & LastRow
-    ActiveChart.SeriesCollection(1).Values = "='" & sheetName & "'!$A$2:$A$" & LastRow
-    ActiveChart.SeriesCollection(1).Format.Line.Weight = 1.75
+    Dim obsData As Series
+    Set obsData = ActiveChart.SeriesCollection(1)
+    obsData.Name = "='" & sheetName & "'!$A$1"
+    obsData.XValues = "='" & sheetName & "'!$D$2:$D$" & LastRow
+    obsData.Values = "='" & sheetName & "'!$A$2:$A$" & LastRow
 
     ' For Sim Series
-    ActiveChart.SeriesCollection.NewSeries
-    ActiveChart.SeriesCollection(2).Name = "='" & sheetName & "'!$B$1"
-    ActiveChart.SeriesCollection(2).XValues = "='" & sheetName & "'!$D$2:$D$" & LastRow
-    ActiveChart.SeriesCollection(2).Values = "='" & sheetName & "'!$B$2:$B$" & LastRow
-    ActiveChart.SeriesCollection(2).Format.Line.ForeColor.RGB = RGB(255, 0, 0)
-    ActiveChart.SeriesCollection(2).Format.Line.Weight = 1.75
+    Dim simData As Series
+    Set simData = ActiveChart.SeriesCollection(2)
+    simData.Name = "='" & sheetName & "'!$B$1"
+    simData.XValues = "='" & sheetName & "'!$D$2:$D$" & LastRow
+    simData.Values = "='" & sheetName & "'!$B$2:$B$" & LastRow
 
     ' Used to format chart for each unique graph
     MinValue MinVal, GraphUnits, sheetName
@@ -354,17 +354,33 @@ ByVal sheetCount As Long)
     ActiveChart.Axes(xlValue).ScaleType = xlLogarithmic
     ActiveChart.Axes(xlValue).MinimumScale = 0.1
 
+    ' Change Format
+    ActiveChart.SeriesCollection(1).Select
+    With Selection
+        .Format.Line.Visible = msoTrue
+        .Format.Line.ForeColor.RGB = RGB(0, 112, 192)
+        .Format.Line.Weight = 2.25
+    End With
+    ActiveChart.SeriesCollection(2).Select
+    With Selection
+        .Format.Line.Visible = msoTrue
+        .Format.Line.ForeColor.RGB = RGB(255, 0, 0)
+        .Format.Line.Weight = 2.25
+    End With
+
     ' Legend
     ActiveChart.HasLegend = True
     ActiveChart.Legend.Select
-    Selection.Position = xlTop
-    Selection.Format.TextFrame2.TextRange.Font.Bold = msoTrue
+    With Selection
+        .Position = xlTop
+        .Format.TextFrame2.TextRange.Font.Bold = msoTrue
+    End With
     With Selection.Format.TextFrame2.TextRange.Font
         .NameComplexScript = "Arial"
         .NameFarEast = "Arial"
         .Name = "Arial"
         .Bold = msoTrue
-        .Size = 24
+        .Size = 20
     End With
 
     ' Save Original

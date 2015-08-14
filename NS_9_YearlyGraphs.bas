@@ -98,7 +98,7 @@ End Function
 ' Date Created : March 25, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 27, 2014
+' Date Edited  : April 7, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -197,14 +197,33 @@ ByVal YearName As Long, ByVal StartRow As Long, ByVal LastRow As Long)
         .HasTitle = False
     End With
 
-    ' Series Information
-    ActiveChart.SeriesCollection(1).Name = "=""OBS"""
-    ActiveChart.SeriesCollection(1).Values = "=" & tmpSheet.Name & "!E" & StartRow & ":E" & LastRow
-    ActiveChart.SeriesCollection(1).XValues = "=" & tmpSheet.Name & "!D" & StartRow & ":D" & LastRow
-    ActiveChart.SeriesCollection.NewSeries
-    ActiveChart.SeriesCollection(2).Name = "=""SIM"""
-    ActiveChart.SeriesCollection(2).Values = "=" & tmpSheet.Name & "!F" & StartRow & ":F" & LastRow
-    ActiveChart.SeriesCollection(2).XValues = "=" & tmpSheet.Name & "!D" & StartRow & ":D" & LastRow
+    ' For Obs Series
+    Dim obsData As Series
+    Set obsData = ActiveChart.SeriesCollection(1)
+    obsData.Name = "=""OBS"""
+    obsData.Values = "=" & tmpSheet.Name & "!E" & StartRow & ":E" & LastRow
+    obsData.XValues = "=" & tmpSheet.Name & "!D" & StartRow & ":D" & LastRow
+
+    ' For Sim Series
+    Dim simData As Series
+    Set simData = ActiveChart.SeriesCollection(2)
+    simData.Name = "=""SIM"""
+    simData.Values = "=" & tmpSheet.Name & "!F" & StartRow & ":F" & LastRow
+    simData.XValues = "=" & tmpSheet.Name & "!D" & StartRow & ":D" & LastRow
+
+    ' Change Colour Format
+    ActiveChart.SeriesCollection(1).Select
+    With Selection
+        .Format.Line.Visible = msoTrue
+        .Format.Line.ForeColor.RGB = RGB(0, 112, 192)
+        .Format.Line.Weight = 2.25
+    End With
+    ActiveChart.SeriesCollection(2).Select
+    With Selection
+        .Format.Line.Visible = msoTrue
+        .Format.Line.ForeColor.RGB = RGB(255, 0, 0)
+        .Format.Line.Weight = 2.25
+    End With
 
     ' Add axis titles
     ActiveChart.SetElement (msoElementPrimaryValueAxisTitleRotated)

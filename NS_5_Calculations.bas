@@ -7,7 +7,7 @@ Const Stats4 As String = "|O-Oavg|"
 ' Date Created : March 1, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 1, 2014
+' Date Edited  : April 7, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -40,7 +40,7 @@ End Function
 ' Date Created : February 23, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 4, 2014
+' Date Edited  : March 1, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -55,7 +55,7 @@ Function NashCalculationsWorksheet(ByRef wbMaster As Workbook, _
 ByRef tmpShtNum As Long)
 
     Dim tmpSheet As Worksheet
-    Dim lastRow As Long, lastCol As Long
+    Dim LastRow As Long, lastCol As Long
     Dim statsCol As Long, tmpCol As Long
 
     ' Activate Appropriate Worksheet #
@@ -64,7 +64,7 @@ ByRef tmpShtNum As Long)
     tmpSheet.Activate
 
     ' Average Calculations
-    Call FindLastRowColumn(lastRow, lastCol)
+    Call FindLastRowColumn(LastRow, lastCol)
     tmpCol = lastCol + 4 ' Do calculations  from last column + four more columns
     Columns("D:I").ColumnWidth = 17
     If tmpShtNum > 3 Then
@@ -73,27 +73,27 @@ ByRef tmpShtNum As Long)
         Range("A1").Offset(0, 2).Value = "MON_AVE_SIM"
     End If
     Range("A1").Offset(0, tmpCol).Value = "TOT_AVE_OBS"
-    Range("A1").Offset(1, tmpCol).FormulaR1C1 = "=AVERAGE(RC[-" & lastCol + 3 & "]:R[" & lastRow - 2 & "]C[-" & lastCol + 3 & "])"
+    Range("A1").Offset(1, tmpCol).FormulaR1C1 = "=AVERAGE(RC[-" & lastCol + 3 & "]:R[" & LastRow - 2 & "]C[-" & lastCol + 3 & "])"
     Range("A1").Offset(0, tmpCol + 1).Value = "TOT_AVE_SIM"
-    Range("A1").Offset(1, tmpCol + 1).FormulaR1C1 = "=AVERAGE(RC[-" & lastCol + 3 & "]:R[" & lastRow - 2 & "]C[-" & lastCol + 3 & "])"
+    Range("A1").Offset(1, tmpCol + 1).FormulaR1C1 = "=AVERAGE(RC[-" & lastCol + 3 & "]:R[" & LastRow - 2 & "]C[-" & lastCol + 3 & "])"
 
     ' Statistics
     ' Print Header then Values
     Range("A1").Offset(0, lastCol).Value = Stats1 ' Headers
     Range("A1").Offset(1, lastCol).FormulaR1C1 = "=(RC[-" & lastCol - 1 & "]-RC[-" & lastCol - 2 & "])^2"
-    Range("A1").Offset(1, lastCol).AutoFill Destination:=Range(Cells(2, lastCol + 1), Cells(lastRow, lastCol + 1))
+    Range("A1").Offset(1, lastCol).AutoFill Destination:=Range(Cells(2, lastCol + 1), Cells(LastRow, lastCol + 1))
 
     Range("A1").Offset(0, lastCol + 1).Value = Stats2
     Range("A1").Offset(1, lastCol + 1).FormulaR1C1 = "=(RC[-" & lastCol & "]-R2C" & tmpCol + 1 & ")^2"
-    Range("A1").Offset(1, lastCol + 1).AutoFill Destination:=Range(Cells(2, lastCol + 2), Cells(lastRow, lastCol + 2))
+    Range("A1").Offset(1, lastCol + 1).AutoFill Destination:=Range(Cells(2, lastCol + 2), Cells(LastRow, lastCol + 2))
 
     Range("A1").Offset(0, lastCol + 2).Value = Stats3
     Range("A1").Offset(1, lastCol + 2).FormulaR1C1 = "=ABS(RC[-" & lastCol + 1 & "]-RC[-" & lastCol & "])"
-    Range("A1").Offset(1, lastCol + 2).AutoFill Destination:=Range(Cells(2, lastCol + 3), Cells(lastRow, lastCol + 3))
+    Range("A1").Offset(1, lastCol + 2).AutoFill Destination:=Range(Cells(2, lastCol + 3), Cells(LastRow, lastCol + 3))
 
     Range("A1").Offset(0, lastCol + 3).Value = Stats4
     Range("A1").Offset(1, lastCol + 3).FormulaR1C1 = "=ABS(RC[-" & lastCol + 2 & "]-R2C" & tmpCol + 1 & ")"
-    Range("A1").Offset(1, lastCol + 3).AutoFill Destination:=Range(Cells(2, lastCol + 4), Cells(lastRow, lastCol + 4))
+    Range("A1").Offset(1, lastCol + 3).AutoFill Destination:=Range(Cells(2, lastCol + 4), Cells(LastRow, lastCol + 4))
 
     ' Rearrange Columns
     Range(Columns(lastCol + 1), Columns(lastCol + 2)).Select
