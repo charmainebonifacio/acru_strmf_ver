@@ -19,15 +19,15 @@ Function NashProbabilityWorksheet(ByRef wbMaster As Workbook, _
 ByVal DlyLastRow As Long, ByVal MlyLastRow As Long)
 
     Dim shtIndex As Long
-    
+
     ' Initialize Arrays
     Call LabelArray
     Call NonLabelArray
-    
+
     ' Create Daily Probability Worksheet
     shtIndex = 1
     Call ProbabilitySheetLayout(wbMaster, shtIndex, DlyLastRow)
-    
+
     ' Create Monthly Probability Worksheet
     shtIndex = 2
     Call ProbabilitySheetLayout(wbMaster, shtIndex, MlyLastRow)
@@ -60,7 +60,7 @@ Function LabelArray()
     lblArr(8) = "0.95"
     lblArr(9) = "0.99"
     lblArr(10) = "0.999"
-    
+
 End Function
 '---------------------------------------------------------------------
 ' Date Created : March 10, 2014
@@ -92,7 +92,7 @@ End Function
 ' Date Created : March 10, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 10, 2014
+' Date Edited  : April 5, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -107,20 +107,20 @@ ByVal dataIndex As Long, ByVal lastrow As Long)
 
     Dim tmpSht As Worksheet
     Dim origSht As Worksheet
-    
+
     ' Name Worksheet
     wbMaster.Activate
     Set tmpSheet = Sheets.Add(After:=Sheets(Sheets.Count))
     If dataIndex = 1 Then dataName = "Daily Data Probability"
     If dataIndex = 2 Then dataName = "Monthly Data Probability"
     tmpSheet.Name = dataName
-    
+
     ' Copy OBS/SIM Data
     Set origSht = Sheets(dataIndex + 2)
     origSht.Activate
     Range("B1").EntireColumn.Copy Destination:=tmpSheet.Range("A:A")
     Range("C1").EntireColumn.Copy Destination:=tmpSheet.Range("B:B")
-  
+
     ' Setup and Cell Alignment
     tmpSheet.Activate
     Cells.Select
@@ -143,7 +143,7 @@ ByVal dataIndex As Long, ByVal lastrow As Long)
     End With
     Range("A:D, F:H, J:L").ColumnWidth = 14
     Range("E:E,I:I").ColumnWidth = 2
-    
+
     ' Enter Texts and Format Layout
     If dataIndex = 2 Then
         Range("A1").Offset(0, 0).Value = "OBS"
@@ -151,7 +151,7 @@ ByVal dataIndex As Long, ByVal lastrow As Long)
     End If
     Range("A1").Offset(0, 2).Value = "RANK"
     Range("A1").Offset(0, 3).Value = "XRANK"
-    
+
     tmpSheet.Activate
     ActiveSheet.Sort.SortFields.Add Key:=Range("A2"), _
         SortOn:=xlSortOnValues, Order:=xlDescending, DataOption:=xlSortNormal
@@ -163,7 +163,7 @@ ByVal dataIndex As Long, ByVal lastrow As Long)
         .SortMethod = xlPinYin
         .Apply
     End With
-   
+
     ' Sort Values from Largest to Smallest Value (Descending Order)
     ActiveSheet.Sort.SortFields.Clear
     ActiveSheet.Sort.SortFields.Add Key:=Range("B2"), _
@@ -176,7 +176,7 @@ ByVal dataIndex As Long, ByVal lastrow As Long)
         .SortMethod = xlPinYin
         .Apply
     End With
-    
+
     ' Rank Values from Largest to Smallest Value (Descending Order)
     Range("C2").Value = "1"
     Range("C3").Value = "2"
@@ -184,10 +184,10 @@ ByVal dataIndex As Long, ByVal lastrow As Long)
     Range("C2:C4").Select
     Selection.AutoFill Destination:=Range("C2:C" & lastrow), Type:=xlFillDefault
     Range("D2").Select
-    If Val(Application.Version) < 12 Then Selection.FormulaR1C1 = "=NORMSINV((R[0]C[-1]-0.5)/COUNT(R2C2:R" & lastrow & "C2))"
+    If Val(Application.Version) <= 12 Then Selection.FormulaR1C1 = "=NORMSINV((R[0]C[-1]-0.5)/COUNT(R2C2:R" & lastrow & "C2))"
     If Val(Application.Version) > 12 Then Selection.FormulaR1C1 = "=NORM.S.INV((R[0]C[-1]-0.5)/COUNT(R2C2:R" & lastrow & "C2))"
     Selection.AutoFill Destination:=Range("D2:D" & lastrow), Type:=xlFillDefault
-    
+
     ' Label
     Range("F1").Offset(0, 0).Value = "LABEL"
     Range("F1").Offset(0, 1).Value = "Y-LABEL"
@@ -198,7 +198,7 @@ ByVal dataIndex As Long, ByVal lastrow As Long)
         Range("F1").Offset(Row + 1, 1).Value = 0
     Next Row
     Range("H2").Select
-    If Val(Application.Version) < 12 Then Selection.FormulaR1C1 = "=NORMSINV(R[0]C[-2])"
+    If Val(Application.Version) <= 12 Then Selection.FormulaR1C1 = "=NORMSINV(R[0]C[-2])"
     If Val(Application.Version) > 12 Then Selection.FormulaR1C1 = "=NORM.S.INV(R[0]C[-2])"
     Selection.AutoFill Destination:=Range("H2:H12"), Type:=xlFillDefault
 
@@ -211,9 +211,8 @@ ByVal dataIndex As Long, ByVal lastrow As Long)
         Range("J1").Offset(Row + 1, 1).Value = 0
     Next Row
     Range("L2").Select
-    If Val(Application.Version) < 12 Then Selection.FormulaR1C1 = "=NORMSINV(R[0]C[-2])"
+    If Val(Application.Version) <= 12 Then Selection.FormulaR1C1 = "=NORMSINV(R[0]C[-2])"
     If Val(Application.Version) > 12 Then Selection.FormulaR1C1 = "=NORM.S.INV(R[0]C[-2])"
     Selection.AutoFill Destination:=Range("L2:L9"), Type:=xlFillDefault
 
 End Function
-

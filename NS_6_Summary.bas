@@ -3,7 +3,7 @@ Attribute VB_Name = "NS_6_Summary"
 ' Date Created : February 27, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 11, 2014
+' Date Edited  : April 5, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -351,18 +351,18 @@ ByVal calIndex As Long)
     ' MAQ
     Range("A14").Offset(0, calIndex).Value = "=(R13C" & startCol & "/R12C" & startCol & "*100)-100"
     ' OBS VARIANCE
-    If Val(Application.Version) < 12 Then Range("A17").Offset(0, calIndex).Value = "=VAR(" & wkName & "!B2:B" & shtLastRow & ")"
+    If Val(Application.Version) <= 12 Then Range("A17").Offset(0, calIndex).Value = "=VAR(" & wkName & "!B2:B" & shtLastRow & ")"
     If Val(Application.Version) > 12 Then Range("A17").Offset(0, calIndex).Value = "=VAR.S(" & wkName & "!B2:B" & shtLastRow & ")"
     ' OBS VARIANCE
-    If Val(Application.Version) < 12 Then Range("A18").Offset(0, calIndex).Value = "=VAR(" & wkName & "!C2:C" & shtLastRow & ")"
+    If Val(Application.Version) <= 12 Then Range("A18").Offset(0, calIndex).Value = "=VAR(" & wkName & "!C2:C" & shtLastRow & ")"
     If Val(Application.Version) > 12 Then Range("A18").Offset(0, calIndex).Value = "=VAR.S(" & wkName & "!C2:C" & shtLastRow & ")"
     ' % DIFFERENCE
     Range("A19").Offset(0, calIndex).Value = "=(R18C" & startCol & "/R17C" & startCol & "*100)-100"
     ' OBS STD
-    If Val(Application.Version) < 12 Then Range("A22").Offset(0, calIndex).Value = "=STDEV(" & wkName & "!B2:B" & shtLastRow & ")"
+    If Val(Application.Version) <= 12 Then Range("A22").Offset(0, calIndex).Value = "=STDEV(" & wkName & "!B2:B" & shtLastRow & ")"
     If Val(Application.Version) > 12 Then Range("A22").Offset(0, calIndex).Value = "=STDEV.S(" & wkName & "!B2:B" & shtLastRow & ")"
     ' SIM STD
-    If Val(Application.Version) < 12 Then Range("A23").Offset(0, calIndex).Value = "=STDEV(" & wkName & "!C2:C" & shtLastRow & ")"
+    If Val(Application.Version) <= 12 Then Range("A23").Offset(0, calIndex).Value = "=STDEV(" & wkName & "!C2:C" & shtLastRow & ")"
     If Val(Application.Version) > 12 Then Range("A23").Offset(0, calIndex).Value = "=STDEV.S(" & wkName & "!C2:C" & shtLastRow & ")"
     ' % DIFFERENCE
     Range("A24").Offset(0, calIndex).Value = "=(R23C" & startCol & "/R22C" & startCol & "*100)-100"

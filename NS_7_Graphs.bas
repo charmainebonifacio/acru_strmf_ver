@@ -3,7 +3,7 @@ Attribute VB_Name = "NS_7_Graphs"
 ' Date Created : February 27, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : March 4, 2014
+' Date Edited  : April 5, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -87,8 +87,10 @@ ByVal lastRow As Long, ByVal maxVal As Long, ByVal calIndex As Long)
     Dim trendLine As Series
     Set trendLine = ActiveChart.SeriesCollection(2)
     trendLine.Name = "=""Trendline"""
-    trendLine.XValues = "={0," & maxVal & "}"
-    trendLine.Values = "={0," & maxVal & "}"
+    trendLine.XValues = "={0,0}"
+    trendLine.Values = "={0,0}"
+    'trendLine.XValues = "={0," & maxVal & "}"
+    'trendLine.Values = "={0," & maxVal & "}"
     With trendLine
         .Border.Weight = xlMedium
         .Border.ColorIndex = 1
