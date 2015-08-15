@@ -8,6 +8,8 @@ This macro is used in the verification process of streamflow data:
  - create monthly mean graphs
  - create Exceedance Probability Plots
 
+![](https://farm6.staticflickr.com/5718/19960328803_9fc4824cb8.jpg)
+
 ## Context
 The verification of streamflow is key calibration process. The purpose of this macro is to automate the post-processing of all ACRU output files after each run in order to introduce human-error and expedite the verification process.
 
