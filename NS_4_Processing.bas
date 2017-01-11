@@ -3,7 +3,7 @@ Attribute VB_Name = "NS_4_Processing"
 ' Date Created : February 22, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : April 7, 2014
+' Date Edited  : March 10, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -26,14 +26,14 @@ ByRef SeriesEndYear As String, ByRef DlyLastRow As Long)
     Dim colRange1 As Long, colRange2 As Long
     Dim monthStr As String
     Dim CountMissingValues As Long
-
+    
     ' Copy Original Data
     wbMaster.Activate
     Worksheets(1).Copy After:=Sheets(Sheets.Count)
     Set tmpSheet = wbMaster.Worksheets(Sheets.Count)
     tmpSheet.Name = "NashData"
     tmpSheet.Activate
-
+    
     ' Change Headers
     If Range("A1").Offset(0, 1).Value = "MO" Then Range("A1").Offset(0, 1).Value = "MONTH"
     If Range("A1").Offset(0, 2).Value = "DY" Then Range("A1").Offset(0, 2).Value = "DAY"
@@ -51,7 +51,7 @@ ByRef SeriesEndYear As String, ByRef DlyLastRow As Long)
     ActiveCell.Value = "DATE"
     Range("A1").Offset(1, startRange).FormulaR1C1 = "=DATE(RC[-3],RC[-2],RC[-1])"
     Range("A1").Offset(1, startRange).AutoFill Destination:=Range(Cells(2, colRange1), Cells(LastRow, colRange1))
-
+    
     ' Then Insert UNID column
     Range("A1").Offset(0, colRange1).Select
     Set rng = Selection
@@ -64,11 +64,11 @@ ByRef SeriesEndYear As String, ByRef DlyLastRow As Long)
         Range("A1").Offset(initRow - 1, colRange1).Value = Cells(initRow, 1) & monthStr
     Next initRow
     Range(Cells(2, colRange2), Cells(LastRow, colRange2)).NumberFormat = "General"
-
+    
     ' Change Headers
     Range("A1").Offset(0, colRange2).Value = "OBS"
     Range("A1").Offset(0, colRange2 + 1).Value = "SIM"
-
+    
     ' Look at Series Start and End Years
     ' Once next year row is found, delete the first year data
     Call FindYearRange(wbMaster, colRange1, LastRow, SeriesStartYear, SeriesEndYear)
@@ -76,7 +76,7 @@ ByRef SeriesEndYear As String, ByRef DlyLastRow As Long)
     Range(Cells(2, 1), Cells(NewStartYearRow - 1, 1)).Select
     Selection.EntireRow.Delete
     Range("A1").Select
-
+    
     ' Remove -99.9 Values and its associated rows
     Call FindLastRowColumn(newLastRow, newLastCol)
     CountMissingValues = 0
@@ -87,7 +87,7 @@ ByRef SeriesEndYear As String, ByRef DlyLastRow As Long)
     Next
     Debug.Print "The NashData Row count: " & newLastRow
     Debug.Print "Missing Values Count: " & CountMissingValues
-
+    
     ' Auto New Filter
     If CountMissingValues >= 1 Then
         ActiveSheet.Range(Cells(1, newLastCol - 1), _
@@ -99,7 +99,7 @@ ByRef SeriesEndYear As String, ByRef DlyLastRow As Long)
             Cells(newLastRow, newLastCol - 1)).AutoFilter Field:=1
         Selection.AutoFilter
     End If
-
+    
     ' Re-calculate Auto New Filter
     Call FindLastRowColumn(newLastRow, newLastCol)
     Debug.Print "After removing all missing values, the NashData Row count: " & newLastRow
@@ -130,7 +130,7 @@ ByVal SeriesStartYear As String) As Long
     Dim SeriesStart As Date, SeriesEnd As Date
     Dim BASEDATE As Date
     Dim newYear As Integer, newStartYear As String
-
+    
     ' Initialize Variables
     FindNashDailyStartYearRow = 0
     StartRow = 2                        ' After header row
@@ -138,7 +138,7 @@ ByVal SeriesStartYear As String) As Long
     newStartYear = CStr(newYear)        ' Convert to string
     BASEDATE = DateValue("01/01/" & newStartYear)  ' Create the base date to compare to
     Debug.Print newYear, newStartYear, BASEDATE
-
+    
     ' Check Original Data
     wbMaster.Activate
     Set tmpSheet = wbMaster.Worksheets(Sheets.Count)
@@ -154,13 +154,13 @@ ByVal SeriesStartYear As String) As Long
             Exit For
         End If
     Next i
-
+    
 End Function
 '---------------------------------------------------------------------
 ' Date Created : February 22, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : April 7 2014
+' Date Edited  : February 25, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -184,7 +184,7 @@ ByRef tmpSheet As Worksheet)
     Set copySheet = wbMaster.Worksheets(Sheets.Count)
     copySheet.Name = "DailyStats"
     copySheet.Activate
-
+    
     ' Clean Worksheet!
     Columns("E").Delete   ' Delete the UNID
     Columns("D").Copy
@@ -193,7 +193,7 @@ ByRef tmpSheet As Worksheet)
         SkipBlanks:=False, _
         Transpose:=False
     Selection.ColumnWidth = 13
-
+    
     ' Delete Unnecessary Columns
     If Range("A1").Offset(0, 0).Value = "YEAR" And _
         Range("A1").Offset(0, 1).Value = "MONTH" And _
@@ -224,12 +224,12 @@ ByRef SeriesEndYear As String)
     Dim tmpSheet As Worksheet
     Dim StartRow As Long
     StartRow = 2 ' After header row
-
+    
     ' Check Original Data
     wbMaster.Activate
     Set tmpSheet = wbMaster.Worksheets(Sheets.Count)
     tmpSheet.Activate
-
+    
     ' Get Start and End Year
     SeriesStartYear = Cells(2, 1).Value
     SeriesEndYear = Cells(LastRow, 1).Value
@@ -263,11 +263,11 @@ ByRef SeriesEndYear As String, ByRef MlyLastRow As Long)
     Dim pivotTableName As String
     Dim pivotSheet As Worksheet, MasterSheet As Worksheet
     Dim newSrcData As String, tblDest As String
-
+    
     wbMaster.Activate
     Set MasterSheet = wbMaster.Worksheets(Sheets.Count - 1)
     MasterSheet.Activate
-
+    
     ' Find Relevant Columns
     LastRow = Range("A1").End(xlDown).Row
     Call NashDataColumnHeader(ActiveSheet, dataArray(), LR, LC)
@@ -284,7 +284,7 @@ ByRef SeriesEndYear As String, ByRef MlyLastRow As Long)
     ' Create a new pivot table
     MasterSheet.Activate
     pivotTableName = "PivotTable"
-    Set pivotSheet = Sheets.Add(After:=Sheets(Sheets.Count))
+    Set pivotSheet = Sheets.Add(After:=Sheets(Sheets.Count - 1))
     pivotSheet.Name = pivotTableName
     newSrcData = "'" & MasterSheet.Name & "'!R1C" & startRange & ":R" & LastRow & "C" & startRange + 2
     tblDest = "'" & pivotSheet.Name & "'!R1C1"
@@ -294,9 +294,9 @@ ByRef SeriesEndYear As String, ByRef MlyLastRow As Long)
             TableDestination:=tblDest, _
             TableName:=pivotTableName, _
             DefaultVersion:=xlPivotTableVersion12
-    ActiveSheet.Move After:=Sheets(Sheets.Count)
+    'ActiveSheet.Move After:=Sheets(Sheets.Count)
     'ActiveSheet.Name = pivotTableName
-
+    
     With ActiveSheet.PivotTables(pivotTableName).PivotFields("UNID")
         .Orientation = xlRowField
         .Position = 1
@@ -320,11 +320,11 @@ ByRef SeriesEndYear As String, ByRef MlyLastRow As Long)
     tmpSheet.Cells(LastRow, 1).EntireRow.Delete
     If Range("A1").Offset(0, 1).Value = "Values" Then Rows(1).EntireRow.Delete
     Range("A1").Select
-
+    
     ' New Last Row
     newLastRow = Range("A1").End(xlDown).Row
     MlyLastRow = newLastRow
-
+ 
 End Function
 '---------------------------------------------------------------------
 ' Date Created : February 22, 2014
@@ -342,28 +342,28 @@ End Function
 '---------------------------------------------------------------------
 Function NashDataColumnHeader(ByRef tmpSheet As Worksheet, ByRef headerArr(), _
 ByRef varLastRow As Long, ByRef varLastColumn As Long)
-
+    
     Dim rACells As Range, rLoopCells As Range
     Dim refIDCellValue As String
     Dim rowID As Integer
     Dim NewCol As Long
     Dim refIndex As Integer, colIndex As Integer
     Dim CurrentCol As Long
-
+    
     ' Disable all the pop-up menus
     Application.ScreenUpdating = False
-
+    
     ' Initialize Variables
     Call FindLastRowColumn(varLastRow, varLastColumn)
-    If WorksheetFunction.CountA(Cells) > 0 Then Range(Cells(1, 1), Cells(1, lastCol)).Select
+    If WorksheetFunction.CountA(Cells) > 0 Then Range(Cells(1, 1), Cells(1, LastCol)).Select
     Set rACells = Selection
-
+    
     On Error Resume Next 'In case of NO text constants.
-
+    
     ' Initialize Array
     NewCol = varLastColumn - 1 ' Because of the header on row one!
     ReDim headerArr(NewCol, 1)
-
+    
     ' If could not find any text
     If rACells Is Nothing Then
         MsgBox "Could not find any text."
@@ -382,3 +382,5 @@ ByRef varLastRow As Long, ByRef varLastColumn As Long)
     Next rLoopCells
 
 End Function
+
+

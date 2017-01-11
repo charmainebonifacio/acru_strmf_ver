@@ -407,18 +407,18 @@ Function SaveTXT(ByRef wbTMP As Workbook, ByRef tmpSheet As Worksheet, _
 ByVal fileDir As String, ByVal fName As String)
 
     Dim saveFile As String
-    Dim FileName As String
+    Dim fileName As String
     
     ' Activate the appropriate Worksheet
     tmpSheet.Activate
     
     ' Check the Excel version
-    If Val(Application.Version) < 9 Then Exit Function
+    If val(Application.Version) < 9 Then Exit Function
     
     ' Save information as textfile
-    FileName = fName & ".txt"
-    saveFile = fileDir & FileName
-    If Right(fileDir, 1) <> "\" Then saveFile = fileDir & "\" & FileName
+    fileName = fName & ".txt"
+    saveFile = fileDir & fileName
+    If Right(fileDir, 1) <> "\" Then saveFile = fileDir & "\" & fileName
     
     wbTMP.SaveAs saveFile, FileFormat:=xlText, CreateBackup:=False
     
@@ -427,18 +427,18 @@ Function SaveReturnXLSX(ByRef wbTMP As Workbook, ByRef tmpSheet As Worksheet, _
 ByVal fileDir As String, ByVal fName As String) As String
 
     Dim saveFile As String
-    Dim FileName As String
+    Dim fileName As String
     
     ' Activate the appropriate Worksheet
     tmpSheet.Activate
     
     ' Check the Excel version
-    If Val(Application.Version) < 9 Then Exit Function
+    If val(Application.Version) < 9 Then Exit Function
     
     ' Save information as textfile
-    FileName = fName & ".xlsx"
-    saveFile = fileDir & FileName
-    If Right(fileDir, 1) <> "\" Then saveFile = fileDir & "\" & FileName
+    fileName = fName & ".xlsx"
+    saveFile = fileDir & fileName
+    If Right(fileDir, 1) <> "\" Then saveFile = fileDir & "\" & fileName
     wbTMP.SaveAs saveFile, FileFormat:=xlOpenXMLWorkbook, CreateBackup:=False
     
     SaveReturnXLSX = saveFile
@@ -606,7 +606,7 @@ End Function
 ' Parameters   : -
 ' Returns      : Long
 '---------------------------------------------------------------------
-Function lastCol() As Long
+Function LastCol() As Long
 
     Dim LastColIndex As Long
     
@@ -614,7 +614,7 @@ Function lastCol() As Long
        LastColIndex = Cells.Find(What:="*", After:=Range("A1"), SearchOrder:=xlByColumns, SearchDirection:=xlPrevious).Column
     End If
     
-    lastCol = LastColIndex
+    LastCol = LastColIndex
     
 End Function
 '---------------------------------------------------------------------
@@ -662,7 +662,7 @@ End Function
 Function FindSpecificRange(DestSheet As Worksheet, ByVal FirstRowN As Long, _
 ByVal FirstColN As Long, ByVal LastRowN As Long, ByVal LastColN As Long)
 
-    Dim FirstRow&, FirstCol&, LastRow&, lastCol&
+    Dim FirstRow&, FirstCol&, LastRow&, LastCol&
     Dim myUsedRange As Range
         
     ' Activate the correct worksheet
@@ -671,11 +671,11 @@ ByVal FirstColN As Long, ByVal LastRowN As Long, ByVal LastColN As Long)
     FirstRow = FirstRowN
     FirstCol = FirstColN
     LastRow = LastRowN
-    lastCol = LastColN
+    LastCol = LastColN
     
     ' Select Range using FirstRow, FirstCol, LastRow, LastCol
     With ActiveWorkbook.ActiveSheet
-        .Range(Cells(FirstRow, FirstCol), Cells(LastRow, lastCol)).Select
+        .Range(Cells(FirstRow, FirstCol), Cells(LastRow, LastCol)).Select
     End With
     
 End Function
@@ -735,7 +735,7 @@ End Function
 '---------------------------------------------------------------------
 Function FindRange(WKSheet As Worksheet)
 
-    Dim FirstRow&, FirstCol&, LastRow&, lastCol&
+    Dim FirstRow&, FirstCol&, LastRow&, LastCol&
     Dim myUsedRange As Range
         
     ' Activate the correct worksheet
@@ -745,10 +745,10 @@ Function FindRange(WKSheet As Worksheet)
     FirstRow = Cells.Find(What:="*", SearchDirection:=xlNext, SearchOrder:=xlByRows).Row
     FirstCol = Cells.Find(What:="*", SearchDirection:=xlNext, SearchOrder:=xlByColumns).Column
     LastRow = Cells.Find(What:="*", SearchDirection:=xlPrevious, SearchOrder:=xlByRows).Row
-    lastCol = Cells.Find(What:="*", SearchDirection:=xlPrevious, SearchOrder:=xlByColumns).Column
+    LastCol = Cells.Find(What:="*", SearchDirection:=xlPrevious, SearchOrder:=xlByColumns).Column
     
     ' Select Range using FirstRow, FirstCol, LastRow, LastCol
-    Set myUsedRange = Range(Cells(FirstRow, FirstCol), Cells(LastRow, lastCol))
+    Set myUsedRange = Range(Cells(FirstRow, FirstCol), Cells(LastRow, LastCol))
     myUsedRange.Select
     
 End Function
@@ -811,7 +811,7 @@ End Function
 '---------------------------------------------------------------------
 Function ColumnCheck(WKSheet As Worksheet)
 
-    Dim lastCol As Long
+    Dim LastCol As Long
     
     ' Activate correct worksheet
     WKSheet.Activate
@@ -829,9 +829,9 @@ Function ColumnCheck(WKSheet As Worksheet)
     ' last known row.
     '-------------------------------------------------------------
     If WorksheetFunction.CountA(Cells) > 0 Then
-       lastCol = Cells.Find(What:="*", SearchDirection:=xlPrevious, SearchOrder:=xlByColumns).Column
+       LastCol = Cells.Find(What:="*", SearchDirection:=xlPrevious, SearchOrder:=xlByColumns).Column
     End If
-    ActiveSheet.Range("A1").Offset(0, lastCol).Select
+    ActiveSheet.Range("A1").Offset(0, LastCol).Select
 
 End Function
 Function ChangeName(ByVal FileExist As Boolean, ByVal sPath As String, ByVal fName As String) As String

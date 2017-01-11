@@ -3,14 +3,13 @@ Attribute VB_Name = "NS_7_Graphs"
 ' Date Created : March 8, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : April 7, 2014
+' Date Edited  : March 8, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
 ' Title        : CreateStreamflowGraph
-' Description  : This function creates the daily or the monthly
-'                streamflow graphs using the observed against
-'                simulated data.
+' Description  : This program creates an observed against simulated
+'                graph using the data copied
 ' Parameters   : Workbook, Worksheet, Long, Long, Long, Long
 ' Returns      : -
 '---------------------------------------------------------------------
@@ -23,89 +22,155 @@ ByVal LastRow As Long, ByVal maxVal As Long, ByVal calIndex As Long)
     Dim graphName As String
     Dim rng As Range
     Dim graphSheet As Worksheet
-
+    Dim yAxis As String, xAxis As String
+    Dim startRange As Range, endRange As Range
+    Dim sR As String, eR As String
+    
     wbMaster.Activate
     Set tmpSheet = wbMaster.Worksheets(tmpShtNum)
     tmpSheet.Activate
-
-    Range("B:B").Select
-    ActiveSheet.Shapes.AddChart.Select
+    
+    yAxis = "Simulated Streamflow"
+    xAxis = "Observed Streamflow"
+    
+    Set startRange = Worksheets(tmpShtNum).Cells(2, 2)
+    sR = startRange.Address
+    Set endRange = Worksheets(tmpShtNum).Cells(LastRow, 3)
+    eR = endRange.Address
+    
+    Range(Cells(2, 2), Cells(LastRow, 3)).Select
+    ActiveSheet.Shapes.AddChart2(240, xlXYScatter).Select
     If calIndex = 1 Then
-        graphName = "Daily Streamflow Graph"
-        ActiveChart.SetSourceData Source:=Range("DailyStats!$B:$B")
+        graphName = "Daily Streamflow ScatterPlot"
+     '   ActiveChart.SetSourceData Source:=Range("DailyStats!$B:$C")
     Else
-        graphName = "Monthly Streamflow Graph"
-        ActiveChart.SetSourceData Source:=Range("MonthlyStats!$B:$B")
+        graphName = "Monthly Streamflow ScatterPlot"
+     '   ActiveChart.SetSourceData Source:=Range("MonthlyStats!$B:$C")
     End If
-    ActiveChart.Location Where:=xlLocationAsNewSheet, Name:=graphName
-    ActiveChart.Move After:=ActiveWorkbook.Sheets(Sheets.Count)
     With ActiveChart
-        .ChartType = xlXYScatter
-        .HasLegend = False
-        .HasTitle = False
+        .SetSourceData Source:=Range(tmpSheet.Name & "!" & sR & ":" & eR)
+        .Location Where:=xlLocationAsNewSheet, Name:=graphName
     End With
+    ActiveChart.Move After:=ActiveWorkbook.Sheets(Sheets.Count)
+    
+    ' Setup Axis
+    With ActiveChart
+        .ChartTitle.Delete
+        .Axes(xlCategory).TickLabelPosition = xlLow
+        .Axes(xlValue).TickLabelPosition = xlLow
+    End With
+    
+    ' Add Axis titles
+    With ActiveChart
+        .SetElement (msoElementPrimaryValueAxisTitleRotated)
+        .Axes(xlValue).TickLabels.Font.Size = 16
+        .Axes(xlValue, xlPrimary).AxisTitle.Text = yAxis
+        .Axes(xlValue, xlPrimary).AxisTitle.Font.Size = 26
+        .Axes(xlValue, xlPrimary).AxisTitle.Font.Bold = msoTrue
+        .SetElement (msoElementPrimaryCategoryAxisTitleAdjacentToAxis)
+        .Axes(xlCategory).TickLabels.Font.Size = 16
+        .Axes(xlCategory, xlPrimary).AxisTitle.Text = xAxis
+        .Axes(xlCategory, xlPrimary).AxisTitle.Font.Size = 26
+        .Axes(xlCategory, xlPrimary).AxisTitle.Font.Bold = msoTrue
+    End With
+    
+  ' Change Units to be the same for X & Y Axis
+    ActiveChart.ChartArea.Select
+    yMaxUnit = ActiveChart.Axes(xlValue).MaximumScale
+    yMinUnit = ActiveChart.Axes(xlValue).MinimumScale
+    xMaxUnit = ActiveChart.Axes(xlCategory).MaximumScale
+    xMinUnit = ActiveChart.Axes(xlCategory).MinimumScale
+    If yMaxUnit > xMaxUnit Then
+        ActiveChart.Axes(xlCategory).MaximumScale = yMaxUnit
+        ActiveChart.Axes(xlValue).MaximumScale = yMaxUnit
+    Else
+        ActiveChart.Axes(xlCategory).MaximumScale = xMaxUnit
+        ActiveChart.Axes(xlValue).MaximumScale = xMaxUnit
+    End If
+    If xMinUnit < yMinUnit Then
+        ActiveChart.Axes(xlCategory).MinimumScale = xMinUnit
+        ActiveChart.Axes(xlValue).MinimumScale = xMinUnit
+    Else
+        ActiveChart.Axes(xlCategory).MinimumScale = yMinUnit
+        ActiveChart.Axes(xlValue).MinimumScale = yMinUnit
+    End If
+    
+    If yMaxUnit Mod 10 = 0 Then
+      ActiveChart.Axes(xlCategory).MajorUnit = 10
+      ActiveChart.Axes(xlValue).MajorUnit = 10
+    Else
+      ActiveChart.Axes(xlCategory).MajorUnit = 5
+      ActiveChart.Axes(xlValue).MajorUnit = 5
+    End If
+    
+   ' Change Box Layout
+    ActiveChart.PlotArea.Select
+    With ActiveChart.PlotArea
+        .Left = 120
+        .Top = 30
+        .Height = 400
+        .Width = 400
+    End With
+    With ActiveChart.PlotArea.Format.Line
+        .Visible = msoTrue
+        .ForeColor.ObjectThemeColor = msoThemeColorText1
+        .ForeColor.TintAndShade = 0
+        .ForeColor.Brightness = 0
+        .Transparency = 0
+    End With
+    
+    ' Grid Clean Up
+'    ActiveChart.ChartArea.Select
+'    ActiveChart.Axes(xlValue).MajorGridlines.Select
+'    Selection.Format.Line.Visible = msoFalse
+'    ActiveChart.Axes(xlCategory).MajorGridlines.Select
+'    Selection.Format.Line.Visible = msoFalse
 
     ' Series Information
     Dim seriesData As Series
     Set seriesData = ActiveChart.SeriesCollection(1)
-    seriesData.Name = "Data"
-    seriesData.Values = "=" & tmpSheet.Name & "!C2:C" & LastRow
-    seriesData.XValues = "=" & tmpSheet.Name & "!B2:B" & LastRow
     With seriesData
         .MarkerStyle = 8
         .MarkerBackgroundColorIndex = 1
         .MarkerForegroundColorIndex = 1
-        .MarkerSize = 3
+        .MarkerSize = 7
+        .Format.Fill.Visible = msoFalse
         .Trendlines.Add Type:=xlLinear
         With seriesData.Trendlines(1)
-            .Border.Weight = xlMedium
             .Border.LineStyle = xlDash
+            .Format.Line.Visible = msoTrue
+            .Format.Line.Weight = 1
+            .Format.Line.DashStyle = msoLineDash
             .DisplayRSquared = True
             .DisplayEquation = True
         End With
     End With
-
-    ' Set Axis
-    'ActiveChart.Axes(xlCategory).MinimumScale = 0
-    'ActiveChart.Axes(xlCategory).MaximumScale = maxVal
-    'ActiveChart.Axes(xlValue).MinimumScale = 0
-    'ActiveChart.Axes(xlValue).MaximumScale = maxVal
-    ActiveChart.Axes(xlCategory).HasMajorGridlines = True
-    gridunits = ActiveChart.Axes(xlValue).MajorUnit
-    ActiveChart.Axes(xlCategory).MajorUnit = gridunits
-
-    ' Add axis titles
-    ActiveChart.SetElement (msoElementPrimaryCategoryAxisTitleAdjacentToAxis)
-    ActiveChart.SetElement (msoElementPrimaryValueAxisTitleRotated)
-    ActiveChart.Axes(xlValue).TickLabels.Font.Size = 16
-    ActiveChart.Axes(xlCategory).TickLabels.Font.Size = 16
-    ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Text = "Simulated Streamflow"
-    ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Font.Size = 26
-    ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Text = "Observed Streamflow"
-    ActiveChart.Axes(xlCategory, xlPrimary).AxisTitle.Font.Size = 26
-
+    
     ' Add the Trendline
-    ActiveChart.SeriesCollection.NewSeries
-    Dim trendLine As Series
-    Set trendLine = ActiveChart.SeriesCollection(2)
-    trendLine.Name = "=""Trendline"""
-    trendLine.XValues = "={0,0}"
-    trendLine.Values = "={0,0}"
+  '  ActiveChart.SeriesCollection.NewSeries
+   ' Dim trendLine As Series
+    'Set trendLine = ActiveChart.SeriesCollection(2)
+    'trendLine.Name = "=""Trendline"""
+    'trendLine.XValues = "={0,0}"
+    'trendLine.Values = "={0,0}"
     'trendLine.XValues = "={0," & maxVal & "}"
     'trendLine.Values = "={0," & maxVal & "}"
-    With trendLine
-        .Border.Weight = xlMedium
-        .Border.ColorIndex = 1
-        .MarkerStyle = -4142
-    End With
+   ' With trendLine
+    '    .Border.Weight = xlMedium
+     '   .Border.ColorIndex = 1
+      '  .MarkerStyle = -4142
+    'End With
 
     ' Add Trendline Information
-    txtText = seriesData.Trendlines(1).DataLabel.Text
+    ActiveChart.ChartArea.Select
+    txtText = ActiveChart.FullSeriesCollection(1).Trendlines(1).DataLabel.Text
     ActiveChart.Shapes.AddTextbox(msoTextOrientationHorizontal, _
-            110, 10, 250, 120).TextFrame.Characters.Text = _
-            txtText & vbLf & "n = " & WorksheetFunction.Count(Worksheets(tmpShtNum).Range("B:B"))
-    ActiveChart.TextBoxes(1).Interior.Color = vbWhite
-    ActiveChart.TextBoxes(1).Font.Size = 26
+            500, 75, 200, 100).TextFrame.Characters.Text = _
+            txtText & vbLf & "N = " & WorksheetFunction.Count(Worksheets(tmpShtNum).Range("B:B"))
+'    ActiveChart.TextBoxes(1).Interior.Color = vbWhite
+    ActiveChart.TextBoxes(1).Font.Size = 20
     seriesData.Trendlines(1).DataLabel.Delete
-
+    
 End Function
+
+

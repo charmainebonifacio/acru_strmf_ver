@@ -1,23 +1,21 @@
-# The Nash Sutcliffe Index Macro
+# The ACRU-HYDAT Streamflow Verification Tool
 
-This macro is used in the verification process of streamflow data:
+The ACRU-HYDAT Streamflow Verification Tool was developed to automate the process of verifying output data for the ACRU (v336) model against HYDAT data from Environment Canada. The calibration and validation process of modelling are key in hydrological modelling studies. This tool is used in the verification process of streamflow data:
 
- - comparative statistics between simulated and observed streamflow data
- - calculate the Nash Sutcliffe Index
- - create graphs of annual hydrographs
- - create monthly mean graphs
- - create Exceedance Probability Plots
+ - compare observed and simulated streamflow data (mm/day)
+ - summarize the results of the comparative statistical analysis for conservation statistics, regression statistics, error index statistics, and dimensionless statistics
+ - create daily and monthly scatter plot graphs
+ - create daily and monthly daily flow duration curves
+ - create a monthly and annual seasonal flow graphs
+ - create a sequence of annual hydrographs for the available time period.
 
-![](https://farm6.staticflickr.com/5718/19960328803_9fc4824cb8.jpg)
-
-## Context
-The verification of streamflow is key calibration process. The purpose of this macro is to automate the post-processing of all ACRU output files after each run in order to introduce human-error and expedite the verification process.
+![](https://c1.staticflickr.com/6/5158/29982279462_c0e5f9c004_z.jpg)
 
 ## License
 
 The modules and scripts are licensed under a GNU General Public License v2.0
 
-Copyright (C) 2014-2015 Charmaine Michelle T. Bonifacio
+Copyright (C) 2017 Charmaine Michelle T. Bonifacio
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 

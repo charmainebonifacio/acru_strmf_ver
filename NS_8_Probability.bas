@@ -21,21 +21,21 @@ ByVal DlyLastRow As Long, ByVal MlyLastRow As Long)
 
     Dim dailySheetCount As Long
     Dim monthlySheetCount As Long
-
+     
     ' Initialize Arrays
     Call LabelArray
     Call NonLabelArray
     dailySheetCount = 1
     monthlySheetCount = 2
-
+    
     ' Create Daily Probability Worksheet then Monthly Probability Worksheet
     Call ProbabilitySheetLayout(wbMaster, dailySheetCount, DlyLastRow)
     Call ProbabilitySheetLayout(wbMaster, monthlySheetCount, MlyLastRow)
-
+    
     ' Create Daily and Monthly Probability Graphs
     Call GraphProbabilitySheet(macroWKBK, macroSht, wbMaster, dailySheetCount)
     Call GraphProbabilitySheet(macroWKBK, macroSht, wbMaster, monthlySheetCount)
-
+    
 End Function
 '---------------------------------------------------------------------
 ' Date Created : March 10, 2014
@@ -64,18 +64,18 @@ Function LabelArray()
     lblArr(8) = "0.95"
     lblArr(9) = "0.99"
     lblArr(10) = "0.999"
-
+    
 End Function
 '---------------------------------------------------------------------
 ' Date Created : March 10, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : August 14, 2015
+' Date Edited  : March 10, 2014
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
 ' Title        : NonLabelArray
-' Description  : This function initializes the nonlblArr array.
+' Description  : This function initializes the lblArr array.
 ' Parameters   : -
 ' Returns      : -
 '---------------------------------------------------------------------
@@ -96,7 +96,7 @@ End Function
 ' Date Created : March 10, 2014
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : April 7, 2014
+' Date Edited  : November 22, 2015
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -111,20 +111,20 @@ ByVal dataIndex As Long, ByVal LastRow As Long)
 
     Dim tmpSheet As Worksheet
     Dim origSheet As Worksheet
-
+    
     ' Name Worksheet
     wbMaster.Activate
     Set tmpSheet = Sheets.Add(After:=Sheets(Sheets.Count))
-    If dataIndex = 1 Then dataName = "Daily Data Probability"
-    If dataIndex = 2 Then dataName = "Monthly Data Probability"
+    If dataIndex = 1 Then dataName = "Daily Probability Data"
+    If dataIndex = 2 Then dataName = "Monthly Probability Data"
     tmpSheet.Name = dataName
-
+    
     ' Copy OBS/SIM Data
-    Set origSheet = Sheets(dataIndex + 2)
+    Set origSheet = Sheets(dataIndex + 3)
     origSheet.Activate
     Range("B1").EntireColumn.Copy Destination:=tmpSheet.Range("A:A")
     Range("C1").EntireColumn.Copy Destination:=tmpSheet.Range("B:B")
-
+  
     ' Setup and Cell Alignment
     tmpSheet.Activate
     Cells.Select
@@ -147,7 +147,7 @@ ByVal dataIndex As Long, ByVal LastRow As Long)
     End With
     Range("A:D, F:H, J:L").ColumnWidth = 14
     Range("E:E,I:I").ColumnWidth = 2
-
+    
     ' Enter Texts and Format Layout
     If dataIndex = 2 Then
         Range("A1").Offset(0, 0).Value = "OBS"
@@ -155,32 +155,32 @@ ByVal dataIndex As Long, ByVal LastRow As Long)
     End If
     Range("A1").Offset(0, 2).Value = "RANK"
     Range("A1").Offset(0, 3).Value = "XRANK"
-
+    
     tmpSheet.Activate
     ActiveSheet.Sort.SortFields.Add Key:=Range("A2"), _
         SortOn:=xlSortOnValues, Order:=xlDescending, DataOption:=xlSortNormal
     With ActiveSheet.Sort
         .SetRange Range("A2:A" & LastRow)
-        .Header = xlNo
+        .header = xlNo
         .MatchCase = False
         .Orientation = xlTopToBottom
         .SortMethod = xlPinYin
         .Apply
     End With
-
+   
     ' Sort Values from Largest to Smallest Value (Descending Order)
     ActiveSheet.Sort.SortFields.Clear
     ActiveSheet.Sort.SortFields.Add Key:=Range("B2"), _
         SortOn:=xlSortOnValues, Order:=xlDescending, DataOption:=xlSortNormal
     With ActiveSheet.Sort
         .SetRange Range("B2:B" & LastRow)
-        .Header = xlNo
+        .header = xlNo
         .MatchCase = False
         .Orientation = xlTopToBottom
         .SortMethod = xlPinYin
         .Apply
     End With
-
+    
     ' Rank Values from Largest to Smallest Value (Descending Order)
     Range("C2").Value = "1"
     Range("C3").Value = "2"
@@ -188,10 +188,10 @@ ByVal dataIndex As Long, ByVal LastRow As Long)
     Range("C2:C4").Select
     Selection.AutoFill Destination:=Range("C2:C" & LastRow), Type:=xlFillDefault
     Range("D2").Select
-    If Val(Application.Version) <= 12 Then Selection.FormulaR1C1 = "=NORMSINV((R[0]C[-1]-0.5)/COUNT(R2C2:R" & LastRow & "C2))"
-    If Val(Application.Version) > 12 Then Selection.FormulaR1C1 = "=NORM.S.INV((R[0]C[-1]-0.5)/COUNT(R2C2:R" & LastRow & "C2))"
+    If val(Application.Version) <= 12 Then Selection.FormulaR1C1 = "=NORMSINV((R[0]C[-1]-0.5)/COUNT(R2C2:R" & LastRow & "C2))"
+    If val(Application.Version) > 12 Then Selection.FormulaR1C1 = "=NORM.S.INV((R[0]C[-1]-0.5)/COUNT(R2C2:R" & LastRow & "C2))"
     Selection.AutoFill Destination:=Range("D2:D" & LastRow), Type:=xlFillDefault
-
+    
     ' Label
     Range("F1").Offset(0, 0).Value = "LABEL"
     Range("F1").Offset(0, 1).Value = "Y-LABEL"
@@ -202,8 +202,8 @@ ByVal dataIndex As Long, ByVal LastRow As Long)
         Range("F1").Offset(Row + 1, 1).Value = 0
     Next Row
     Range("H2").Select
-    If Val(Application.Version) <= 12 Then Selection.FormulaR1C1 = "=NORMSINV(R[0]C[-2])"
-    If Val(Application.Version) > 12 Then Selection.FormulaR1C1 = "=NORM.S.INV(R[0]C[-2])"
+    If val(Application.Version) <= 12 Then Selection.FormulaR1C1 = "=NORMSINV(R[0]C[-2])"
+    If val(Application.Version) > 12 Then Selection.FormulaR1C1 = "=NORM.S.INV(R[0]C[-2])"
     Selection.AutoFill Destination:=Range("H2:H12"), Type:=xlFillDefault
 
     ' UnLabeled
@@ -215,8 +215,8 @@ ByVal dataIndex As Long, ByVal LastRow As Long)
         Range("J1").Offset(Row + 1, 1).Value = 0
     Next Row
     Range("L2").Select
-    If Val(Application.Version) <= 12 Then Selection.FormulaR1C1 = "=NORMSINV(R[0]C[-2])"
-    If Val(Application.Version) > 12 Then Selection.FormulaR1C1 = "=NORM.S.INV(R[0]C[-2])"
+    If val(Application.Version) <= 12 Then Selection.FormulaR1C1 = "=NORMSINV(R[0]C[-2])"
+    If val(Application.Version) > 12 Then Selection.FormulaR1C1 = "=NORM.S.INV(R[0]C[-2])"
     Selection.AutoFill Destination:=Range("L2:L9"), Type:=xlFillDefault
 
 End Function
@@ -244,7 +244,7 @@ Function MinValue(MinVal As Double, GraphUnits As Double, sheetName As String)
     ColMin = Application.WorksheetFunction.Min(Sheets(sheetName).Range("A2:B31"))
     ColMax = Application.WorksheetFunction.Max(Sheets(sheetName).Range("A2:B31"))
     graphrange = (ColMax - ColMin)
-
+    
     ' Range
     If graphrange <= 10 Then GraphUnits = 1
     If graphrange > 10 And graphrange <= 20 Then GraphUnits = 2
@@ -276,21 +276,21 @@ End Function
 ' Date Created : June 25, 2013
 ' Created By   : Jacob Palardy
 '---------------------------------------------------------------------
-' Date Edited  : March 25, 2014
+' Date Edited  : December 13, 2016
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
 ' Title        : GraphProbabilitySheet
 ' Description  : This program copies template graph from the Macro
 '                workbook and creates a graph for each probability
-'                worksheets.
+'                worksheets. Fixed the y-axis scale.
 ' Parameters   : Workbook, Worksheet, Workbook, Long
 ' Returns      : -
 '---------------------------------------------------------------------
 Function GraphProbabilitySheet(ByRef macroWKBK As Workbook, _
 ByRef macroSht As Worksheet, ByRef wbMaster As Workbook, _
 ByVal sheetCount As Long)
-
+    
     Dim tmpSheet As Worksheet
     Dim WS_Count As Integer
     Dim xCount As Integer
@@ -301,59 +301,66 @@ ByVal sheetCount As Long)
     Dim GraphUnits As Double
     Dim axisName As String
     Dim LastRow As Integer
-
+    
     macroWKBK.Activate
     Set tmpSheet = macroWKBK.Worksheets(2)
-    tmpSheet.Activate
-    ActiveSheet.ChartObjects(1).Copy
-
+        
     wbMaster.Activate
     If sheetCount = 1 Then
-        Sheets(8).Select
-        LastRow = Sheets(8).Range("A2").End(xlDown).Row
-        sheetName = Sheets(8).Name
+        Sheets(9).Select
+        LastRow = Sheets(9).Range("A2").End(xlDown).Row
+        sheetName = Sheets(9).Name
         newName = "Daily Probability Graph"
     End If
     If sheetCount = 2 Then
-        Sheets(9).Select
+        Sheets(10).Select
         ' Find last row
-        LastRow = Sheets(9).Range("A2").End(xlDown).Row
-        sheetName = Sheets(9).Name
+        LastRow = Sheets(10).Range("A2").End(xlDown).Row
+        sheetName = Sheets(10).Name
         newName = "Monthly Probability Graph"
     End If
-
     Range("I19").Select
+    tmpSheet.Activate
+    ActiveSheet.ChartObjects(1).Copy
+    
+    wbMaster.Activate
     ActiveSheet.Paste
+    ActiveChart.ChartArea.Select
     ActiveSheet.ChartObjects(1).Activate
     ActiveChart.Location Where:=xlLocationAsNewSheet, Name:=newName
     Sheets(newName).Move After:=Sheets(Sheets.Count)
-
+    
     ' For Obs Series
-    Dim obsData As Series
-    Set obsData = ActiveChart.SeriesCollection(1)
-    obsData.Name = "='" & sheetName & "'!$A$1"
-    obsData.XValues = "='" & sheetName & "'!$D$2:$D$" & LastRow
-    obsData.Values = "='" & sheetName & "'!$A$2:$A$" & LastRow
-
+    ActiveChart.SeriesCollection(1).Name = "='" & sheetName & "'!$A$1"
+    ActiveChart.SeriesCollection(1).XValues = "='" & sheetName & "'!$D$2:$D$" & LastRow
+    ActiveChart.SeriesCollection(1).Values = "='" & sheetName & "'!$A$2:$A$" & LastRow
+    
     ' For Sim Series
-    Dim simData As Series
-    Set simData = ActiveChart.SeriesCollection(2)
-    simData.Name = "='" & sheetName & "'!$B$1"
-    simData.XValues = "='" & sheetName & "'!$D$2:$D$" & LastRow
-    simData.Values = "='" & sheetName & "'!$B$2:$B$" & LastRow
-
+    ActiveChart.SeriesCollection(2).Name = "='" & sheetName & "'!$B$1"
+    ActiveChart.SeriesCollection(2).XValues = "='" & sheetName & "'!$D$2:$D$" & LastRow
+    ActiveChart.SeriesCollection(2).Values = "='" & sheetName & "'!$B$2:$B$" & LastRow
+    
     ' Used to format chart for each unique graph
     MinValue MinVal, GraphUnits, sheetName
-
+    
     ' Other graph elements
     ActiveChart.Axes(xlValue).Select
-    ActiveChart.Axes(xlValue).MinimumScale = MinVal
+    ActiveChart.Axes(xlValue).MinimumScale = 0 'MinVal
+    ActiveChart.Axes(xlValue).MaximumScale = 100
+    ActiveChart.Axes(xlValue).TickLabels.NumberFormat = "0.0"
+    Application.CommandBars("Format Object").Visible = False
+    ActiveChart.Axes(xlValue).HasMajorGridlines = True
     ActiveChart.Axes(xlValue).MaximumScaleIsAuto = True
-    ActiveChart.Axes(xlValue).MajorUnit = GraphUnits
-    ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Text = "Streamflow (mm/day)"
+    ActiveChart.Axes(xlValue).MinimumScaleIsAuto = True
     ActiveChart.Axes(xlValue).ScaleType = xlLogarithmic
-    ActiveChart.Axes(xlValue).MinimumScale = 0.1
-
+    ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Select
+    ActiveChart.Axes(xlValue, xlPrimary).AxisTitle.Text = "Streamflow (mm/day)"
+    ActiveChart.Axes(xlValue).AxisTitle.Select
+    Selection.Left = 10.102
+    Selection.Top = 163.963
+    ActiveChart.Axes(xlValue).Select
+    ActiveChart.Axes(xlValue).MaximumScale = 100
+    
     ' Change Format
     ActiveChart.SeriesCollection(1).Select
     With Selection
@@ -367,7 +374,7 @@ ByVal sheetCount As Long)
         .Format.Line.ForeColor.RGB = RGB(255, 0, 0)
         .Format.Line.Weight = 2.25
     End With
-
+    
     ' Legend
     ActiveChart.HasLegend = True
     ActiveChart.Legend.Select
@@ -382,9 +389,11 @@ ByVal sheetCount As Long)
         .Bold = msoTrue
         .Size = 20
     End With
-
+    
     ' Save Original
     macroWKBK.Activate
     Worksheets(1).Activate
-
+    
 End Function
+
+

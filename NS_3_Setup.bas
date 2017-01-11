@@ -17,12 +17,12 @@ Function InitVarArray()
 
     Dim refIndex As Integer
     Dim varNum As Integer
-
+    
     varNum = 1
     ReDim OutName(0 To varNum)
     OutName(0) = "STRMFL"
     OutName(1) = "CELRUN"
-
+ 
     For refIndex = LBound(OutName) To UBound(OutName)
         Debug.Print OutName(refIndex)
     Next refIndex
@@ -32,7 +32,7 @@ End Function
 ' Date Created : July 29, 2013
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : July 29, 2013
+' Date Edited  : December 15, 2015
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
@@ -46,32 +46,38 @@ End Function
 ' Returns      : Boolean
 '---------------------------------------------------------------------
 Function Analyze_Multi_ACRU_Out_xxxx(ByRef wbMaster As Workbook, _
-ByRef MasterSheet As Worksheet, ByRef MasterFile As String, _
-ByVal FileCount As Integer) As Boolean
+ByRef MasterSheet As Worksheet, ByRef MasterFile As String) As Boolean
 
-    Dim refIndex As Integer, WrongFileCount As Integer
+    Dim refIndex As Integer, FileCount As Integer, WrongFileCount As Integer
     Dim vTempVer As String, colExists As Boolean
     Dim formatDate As String
 
     ' Disable all the pop-up menus
     Application.ScreenUpdating = False
     Analyze_Multi_ACRU_Out_xxxx = False
+    
+    FileCount = 0
     WrongFileCount = 0
-
+    
     ' Create a Master Workbook
     Set wbMaster = Workbooks.Add(1)
     Set MasterSheet = wbMaster.Worksheets(1)
     MasterSheet.Name = "OriginalData"
-
-    colExists = Setup_ACRU_OUT_XXXX(FileCount, MasterSheet)
-    If colExists = False Then WrongFileCount = WrongFileCount + 1
-
+        
+    ' Call each file...
+    For refIndex = LBound(HRUarr) To UBound(HRUarr)
+        FileCount = FileCount + 1
+        HRUNUM = HRUarr(refIndex)
+        colExists = Setup_ACRU_OUT_XXXX(FileCount, MasterSheet)
+        If colExists = False Then WrongFileCount = WrongFileCount + 1
+    Next refIndex
+        
     ' Check the variable specified by the user
     If WrongFileCount = 0 Then
         Analyze_Multi_ACRU_Out_xxxx = True
-        formatDate = Format(Date, "mm/dd/yyyy")
-        OutDate = Replace(formatDate, "/", "")
-        MasterFile = "NS_HRU" & HRUNUM & "_RUN" & outRUNVAL & "_" & OutDate
+        formatDate = Format(Date, "mm-dd-yyyy")
+        OutDate = Replace(formatDate, "-", "")
+        MasterFile = "SV_HRU" & HRUNUM & "_RUN" & outRUNVAL & "_" & OutDate
     Else:
         wbMaster.Close SaveChanges:=False
         Set wbMaster = Nothing
@@ -83,14 +89,14 @@ End Function
 ' Date Created : July 29, 2013
 ' Created By   : Charmaine Bonifacio
 '---------------------------------------------------------------------
-' Date Edited  : August 14, 2015
+' Date Edited  : July 29, 2013
 ' Edited By    : Charmaine Bonifacio
 '---------------------------------------------------------------------
 ' Organization : Department of Geography, University of Lethbridge
 ' Title        : Setup_ACRU_OUT_XXXX
 ' Description  : This function sets up the ACRU output file. It finds
 '                a specific column and copies the values within it.
-' Parameters   : Integer, Worksheet
+' Parameters   : Integer, String, Worksheet
 ' Returns      : Boolean
 '---------------------------------------------------------------------
 Function Setup_ACRU_OUT_XXXX(ByVal FileCount As Integer, _
@@ -102,11 +108,11 @@ ByRef MasterSheet As Worksheet) As Boolean
     Dim resultVar As Boolean
     Dim arrayText()
     Dim VarToFind As String
-
+    
     ' Disable all the pop-up menus
     Application.ScreenUpdating = False
     Setup_ACRU_OUT_XXXX = True
-
+    
     tmpFile = InPath & "ACRU_Out." & HRUNUM
     arrayText = Array(Array(1, 1), Array(2, 1), Array(3, 1), Array(4, 1), _
             Array(5, 1), Array(6, 1), Array(7, 1), Array(8, 1), Array(9, 1), _
@@ -124,7 +130,7 @@ ByRef MasterSheet As Worksheet) As Boolean
     Application.StatusBar = "Post-processing File: " & tmpFile
     If FileCount Mod 5 = 0 Then DoEvents
     Workbooks.OpenText _
-            FileName:=tmpFile, _
+            fileName:=tmpFile, _
             Origin:=437, _
             StartRow:=1, _
             DataType:=xlDelimited, _
@@ -144,13 +150,13 @@ ByRef MasterSheet As Worksheet) As Boolean
     ' Process Headers
     If FileCount = 1 Then Call ColumnHeader(wsACRU, headerArray(), varLastRow, varLastColumn)
     ' Once validation goes through, then setup ACRU files
-    Call CopyDate(wsACRU, MasterSheet, varLastRow)
+    If FileCount = 1 Then Call CopyDate(wsACRU, MasterSheet, varLastRow)
     For varInd = LBound(OutName) To UBound(OutName)
         VarToFind = Trim(UCase(OutName(varInd)))
         Call CopyValues(wsACRU, MasterSheet, VarToFind, varLastRow)
     Next varInd
     Range("A1").Select
-
+    
     ' Save excel spreadsheet
     wbACRU.Close SaveChanges:=False
     Application.StatusBar = False
@@ -172,28 +178,28 @@ End Function
 '---------------------------------------------------------------------
 Function ColumnHeader(ByRef tmpSheet As Worksheet, ByRef headerArray() As String, _
 ByRef varLastRow As Long, ByRef varLastColumn As Long)
-
+    
     Dim rACells As Range, rLoopCells As Range
     Dim refIDCellValue As String
     Dim rowID As Integer
     Dim NewCol As Long
     Dim refIndex As Integer, colIndex As Integer
     Dim CurrentCol As Long
-
+    
     ' Disable all the pop-up menus
     Application.ScreenUpdating = False
-
+    
     ' Initialize Variables
     Call FindLastRowColumn(varLastRow, varLastColumn)
-    If WorksheetFunction.CountA(Cells) > 0 Then Range(Cells(1, 1), Cells(1, lastCol)).Select
+    If WorksheetFunction.CountA(Cells) > 0 Then Range(Cells(1, 1), Cells(1, LastCol)).Select
     Set rACells = Selection
-
+    
     On Error Resume Next 'In case of NO text constants.
-
+    
     ' Initialize Array
     NewCol = varLastColumn - 1 ' Because of the header on row one!
     ReDim headerArray(NewCol, 1)
-
+    
     ' If could not find any text
     If rACells Is Nothing Then
         MsgBox "Could not find any text."
@@ -227,17 +233,17 @@ End Function
 '---------------------------------------------------------------------
 Function CopyDate(SourceSht As Worksheet, DestSht As Worksheet, _
 ByVal varLastRow As Long)
-
+    
     Dim RngSelect
     Dim PasteSelect
     Dim CurrCol As Integer
 
     ' Disable all the pop-up menus
     Application.ScreenUpdating = False
-
+    
     ' Activate Source Worksheet.
     SourceSht.Activate
-
+      
     '-------------------------------------------------------------
     ' Call FindRange function to select the current used data
     ' within the Source Worksheet. Only copy the selected data.
@@ -248,7 +254,7 @@ ByVal varLastRow As Long)
             Range(Cells(1, CurrCol), Cells(varLastRow, CurrCol + 2)).Select
             RngSelect = Selection.Address
             Range(RngSelect).Copy
-
+            
             ' Activate Destination Worksheet.
             DestSht.Activate
             Call ColumnCheck(DestSht)
@@ -258,7 +264,7 @@ ByVal varLastRow As Long)
         Else: Exit For
         End If
     Next refIndex
-
+    
     ' Clear Clipboard of any copied data.
     Application.CutCopyMode = False
 
@@ -279,17 +285,17 @@ End Function
 '---------------------------------------------------------------------
 Function CopyValues(SourceSht As Worksheet, DestSht As Worksheet, _
 ByVal VarToFind As String, ByVal varLastRow As Long)
-
+    
     Dim RngSelect
     Dim PasteSelect
     Dim CurrCol As Integer
-
+    
     ' Disable all the pop-up menus
     Application.ScreenUpdating = False
-
+    
     ' Activate Source Worksheet.
     SourceSht.Activate
-
+      
     '-------------------------------------------------------------
     ' Call FindRange function to select the current used data
     ' within the Source Worksheet. Only copy the selected data.
@@ -300,7 +306,7 @@ ByVal VarToFind As String, ByVal varLastRow As Long)
             Range(Cells(1, CurrCol), Cells(varLastRow, CurrCol)).Select
             RngSelect = Selection.Address
             Range(RngSelect).Copy
-
+            
             ' Activate Destination Worksheet.
             DestSht.Activate
             Call ColumnCheck(DestSht)
@@ -310,8 +316,9 @@ ByVal VarToFind As String, ByVal varLastRow As Long)
             Exit For ' When variable is found no use going through the rest!
         End If
     Next refIndex
-
+    
     ' Clear Clipboard of any copied data.
     Application.CutCopyMode = False
-
+    
 End Function
+
