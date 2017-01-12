@@ -9,6 +9,8 @@ The ACRU-HYDAT Streamflow Verification Tool was developed to automate the proces
  - create a monthly and annual seasonal flow graphs
  - create a sequence of annual hydrographs for the available time period.
 
+## Tool Interface
+
 ![](https://c1.staticflickr.com/6/5158/29982279462_c0e5f9c004_z.jpg)
 
 ## License
